@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const [ GatewayIntentBits, Events ]= [ Discord.GatewayIntentBits, Discord.Events ];
+const [ GatewayIntentBits, Events, PermissionsBitField ]= [ Discord.GatewayIntentBits, Discord.Events, Discord.PermissionsBitField ];
 const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.MessageContent] });
 
 
@@ -58,7 +58,7 @@ const getIntent = (message) => {
 }
 
 const bulkDelete = (message, messageList) => {
-    message.channel.bulkDelete(messageList).then((messages) => {
+    message.channel.bulkDelete(messageList, true).then((messages) => {
         message.channel.send("```ansi\n[00;32m 메시지 " + messages.size + "개를 삭제하였습니다.[0m\n```").then((msg) => setTimeout(() => msg.delete(), 2000));
     }).catch((err) => {
         console.log(err)
@@ -80,9 +80,15 @@ async function onMessage(message) {
                 message.reply(res.characteristic.text);
                 break;
             case "message.delete":
+                // check if user has permission
+                if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                    message.channel.send("```ansi\n[00;31m 메시지를 삭제할 권한이 없습니다.[0m\n```").then((msg) => setTimeout(() => msg.delete(), 2000));
+                    break;
+                }
                 let messageList = await message.channel.messages.fetch()
                 if (res.characteristic.hasOwnProperty("count")) {
-                    messageList = await message.channel.messages.fetch({ limit: res.characteristic.count })
+                    // slice collection
+                    messageList = messageList.toJSON().slice(0, res.characteristic.count);
                     if (res.characteristic.hasOwnProperty("user")) {
                         messageList = messageList.filter((msg) => msg.author.id === res.characteristic.user.replace("<@", "").replace(">", ""));
                         bulkDelete(message, messageList);
@@ -107,16 +113,5 @@ async function onMessage(message) {
                 }
                 break;
         }
-
-        // if (command === "help") {
-        //     message.channel.send("Help");
-        // }
     }
 }
-
-// (async () => {
-//
-//     let res = (await runPrompt(req("연어를 뮤트시켜줘"))).data.choices[0].message.content.split("\n")[0];
-//     res = JSON.parse(res);
-//     console.log(res);
-// })();
