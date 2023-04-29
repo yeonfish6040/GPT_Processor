@@ -1,6 +1,6 @@
 module.exports = (cmd, description) => {
     return (prompt) => {
-        return [
+        let frame =  [
             { role: "system", content: "Response as json string only." },
             { role: "system", content: "Analyze message's intention and returns command" },
             { role: "system", content: "Command: "+JSON.stringify(cmd) },
@@ -11,6 +11,16 @@ module.exports = (cmd, description) => {
             { role: "system", content: "Do not send code." },
             { role: "system", content: "handle command to message.common if intent doesn't match other things" },
 
+            // System
+            { role: "user", content: "Please delete the conversation." },
+            { role: "assistant", content: "{ \"command\": \"system.reset\" }" },
+            { role: "user", content: "Please reset the conversation" },
+            { role: "assistant", content: "{ \"command\": \"system.reset\" }" },
+            { role: "user", content: "Yeonfish said \"Plz delete my messages\"" },
+            { role: "assistant", content: "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }" },
+            { role: "user", content: "User_ID" },
+            { role: "assistant", content: "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }" },
+
             // nothing
             { role: "user", content: "hello" },
             { role: "assistant", content: "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }" },
@@ -18,7 +28,6 @@ module.exports = (cmd, description) => {
             { role: "assistant", content: "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }" },
             { role: "user", content: "How are you?" },
             { role: "assistant", content: "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }" },
-
 
             // Message.delete
             { role: "user", content: "Delete messages sent from yeonfish" },
@@ -43,9 +52,12 @@ module.exports = (cmd, description) => {
             { role: "assistant", content: "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }" },
             { role: "user", content: "Unmute yeonfish" },
             { role: "assistant", content: "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }" },
-
-            // prompt
-            { role: "user", content: prompt },
-        ]
+        ];
+        if (typeof prompt == "string") {
+            frame.push({role: "user", content: prompt})
+            return frame;
+        }else {
+            return frame.concat(prompt)
+        }
     }
 }
