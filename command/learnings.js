@@ -30,6 +30,8 @@ module.exports = (cmd, description) => {
             { role: "assistant", content: "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }" },
 
             // Message.delete
+            { role: "user", content: "Delete all messages" },
+            { role: "assistant", content: "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"all\" } }" },
             { role: "user", content: "Delete messages sent from yeonfish" },
             { role: "assistant", content: "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }" },
             { role: "user", content: "Delete five messages" },
@@ -41,17 +43,25 @@ module.exports = (cmd, description) => {
 
             // User.kick
             { role: "user", content: "Kick yeonfish" },
-            { role: "assistant", content: "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }" },
+            { role: "assistant", content: "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\", \"reason\": \"no reason\" } }" },
+            { role: "user", content: "yeonfish blamed salmon. plz kick him" },
+            { role: "assistant", content: "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\", \"reason\": \"blamed salmon\" } }" },
 
             // User.ban
             { role: "user", content: "Ban yeonfish" },
-            { role: "assistant", content: "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }" },
+            { role: "assistant", content: "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\", \"unban\": \"false\" } }" },
+            { role: "user", content: "Unban yeonfish" },
+            { role: "assistant", content: "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\", \"unban\": \"true\" } }" },
 
             // User.mute
             { role: "user", content: "Mute yeonfish" },
             { role: "assistant", content: "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }" },
             { role: "user", content: "Unmute yeonfish" },
             { role: "assistant", content: "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }" },
+
+            // User.check_permission
+            { role: "user", content: "Please check permissions for yeonfish" },
+            { role: "assistant", content: "{ \"command\": \"user.check_permission\", \"characteristic\": { \"user\": \"yeonfish\" } }" }
         ];
         if (typeof prompt == "string") {
             frame.push({role: "user", content: prompt})
