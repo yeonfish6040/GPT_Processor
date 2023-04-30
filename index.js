@@ -78,7 +78,7 @@ const bulkDelete = (message, messageList, log=true) => {
 const gotError = async (message, msg) => {
     message.reactions.resolve("✅").users.remove(config.Discord.Bot.Id)
     await message.react("❌");
-    message.reply("```ansi\n[00;31m "+msg+"[0m\n```").then((msg) => setTimeout(() => msg.delete(), 2000));
+    await message.reply("```ansi\n[00;31m "+msg+"[0m\n```").then((msg) => setTimeout(() => msg.delete(), 2000));
 }
 
 const ansify = (str) => {
@@ -280,7 +280,7 @@ async function onMessage(message) {
                         break;
                     case "user.ban":
                         if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.BanMembers)) {
-                            gotError(message, "유저를 차단할 권한이 없습니다.")
+                            await gotError(message, "유저를 차단할 권한이 없습니다.")
                             break;
                         }
                         try {
