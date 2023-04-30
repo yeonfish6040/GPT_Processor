@@ -61,7 +61,11 @@ module.exports = (cmd, description) => {
 
             // User.check_permission
             { role: "user", content: "Please check permissions for yeonfish" },
-            { role: "assistant", content: "{ \"command\": \"user.check_permission\", \"characteristic\": { \"user\": \"yeonfish\" } }" }
+            { role: "assistant", content: "{ \"command\": \"user.check_permission\", \"characteristic\": { \"user\": \"yeonfish\" } }" },
+
+            // Util.timer
+            { role: "user", content: "Please set timer for 1 hour 10 seconds" },
+            { role: "assistant", content: "{ \"command\": \"util.timer\", \"characteristic\": { \"time\": \"3615000\" } }" },
         ];
         if (typeof prompt == "string") {
             frame.push({role: "user", content: prompt})

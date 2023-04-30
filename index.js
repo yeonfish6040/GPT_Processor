@@ -45,18 +45,18 @@ const getIntent = (message) => {
             let response = res.data.choices[0].message.content
             response = jsonReg.exec(response)[0]
             console.log(response)
-            if (!response || response.length == 0) {
-                resolve(null);
+            if (!response || response.length === 0) {
+                reject(null);
             }
             try {
                 response = JSON.parse(response);
 
             }catch (e) {
-                resolve(null);
+                reject(null);
             }
             resolve(response);
-        }).catch((err) => {
-            resolve(null);
+        }).catch(() => {
+            reject(null);
         })
     });
 }
@@ -68,9 +68,9 @@ const bulkDelete = (message, messageList, log=true) => {
                 message.channel.send("```ansi\n[00;32m 메시지 " + messages.size + "개를 삭제하였습니다.[0m\n```").then((msg) => setTimeout(() => msg.delete(), 2000));
             resolve(messages.size);
         }).catch((err) => {
-            console.log(err)
             if (log)
                 message.channel.send("```ansi\n[00;31m 메시지 삭제에 실패하였습니다.[0m\n```").then((msg) => setTimeout(() => msg.delete(), 2000));
+            reject(err);
         })
     });
 }
@@ -151,7 +151,7 @@ async function onMessage(message) {
         try {
             const userMsg = message.content.slice(config.Discord.Bot.Prefix.length).trim();
             console.log(message.author.id+" | "+message.author.username+"#"+message.author.discriminator+": "+userMsg)
-            message.react("🌀");
+            await message.react("🌀");
             if (!conversation[message.author.id])
                 conversation[message.author.id] = { messages: [], lastTime: Date.now() };
             conversation[message.author.id].lastTime = Date.now();
@@ -171,7 +171,7 @@ async function onMessage(message) {
                         break;
                     case "system.need.user":
                         let user = message.guild.members.cache.find((member) => member.name === res.content).id
-                        message.react("🌀");
+                        await message.react("🌀");
                         message.reactions.resolve("✅").users.remove(config.Discord.Bot.Id)
                         if (!conversation[message.author.id])
                             conversation[message.author.id] = {messages: [], lastTime: Date.now()};
@@ -181,7 +181,7 @@ async function onMessage(message) {
                         conversation[message.author.id]["messages"].push({role: "assistant", content: JSON.stringify(res)});
                         await message.react("✅");
                         message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
-                        controller(res2);
+                        await controller(res2);
                         break;
 
                     case "message.common":
@@ -197,12 +197,12 @@ async function onMessage(message) {
                         try {
                             let messageList = await message.channel.messages.fetch()
                             if (res.characteristic.hasOwnProperty("count")) {
-                                if (res.characteristic.count == "all") {
+                                if (res.characteristic.count === "all") {
                                     const deleteAll = async () => {
                                         let count = await bulkDelete(message, messageList, false);
                                         let delCount = count
 
-                                        while (delCount != 0) {
+                                        while (delCount !== 0) {
                                             delCount = await bulkDelete(message, await message.channel.messages.fetch(), false);
                                             count += delCount;
                                         }
@@ -246,7 +246,7 @@ async function onMessage(message) {
                     case "user.check_permission":
                         try {
                             let uid = (/[0-9]+/).exec(res.characteristic.user)[0];
-                            let member = message.guild.members.cache.find((member) => member.user.id == uid);
+                            let member = message.guild.members.cache.find((member) => member.user.id === uid);
                             let role = member.roles.highest;
                             let rolePermissions = role.permissions.serialize();
                             let channel_permissions = message.channel.permissionsFor(uid).serialize();
@@ -266,12 +266,12 @@ async function onMessage(message) {
                         break;
                     case "user.kick":
                         if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.KickMembers)) {
-                            gotError(message, "유저를 추방할 권한이 없습니다.")
+                            await gotError(message, "유저를 추방할 권한이 없습니다.")
                             break;
                         }
                         try {
                             let uid = (/[0-9]+/).exec(res.characteristic.user)[0];
-                            let member = message.guild.members.cache.find((member) => member.user.id == uid);
+                            let member = message.guild.members.cache.find((member) => member.user.id === uid);
                             await member.kick({ reason: res.characteristic.reason });
                             message.reply("완료했습니다!")
                         }catch (e) {
@@ -285,8 +285,8 @@ async function onMessage(message) {
                         }
                         try {
                             let uid = (/[0-9]+/).exec(res.characteristic.user)[0];
-                            if (res.characteristic.unban == "false") {
-                                let member = message.guild.members.cache.find((member) => member.user.id == uid);
+                            if (res.characteristic.unban === "false") {
+                                let member = message.guild.members.cache.find((member) => member.user.id === uid);
                                 await member.ban();
                             }else {
                                 await message.guild.members.unban(client.users.cache.get(uid));
@@ -296,8 +296,22 @@ async function onMessage(message) {
                             console.error(e)
                             await gotError(message, "오류가 발생했습니다. 다시 시도해주세요.\n만약 오류가 계속된다면 대화를 초기화하는 방법도 있습니다! (명령어: '야 => 대화 초기화')")
                         }
+                        break;
                     case "util.timer":
                         let time = res.characteristic.time;
+                        if (isNaN(time))
+                            return await gotError(message, "올바른 형식의 시간이 아닙니다!");
+                        time = parseInt(time);
+                        let embed = new EmbedBuilder()
+                            .setTitle("타이머")
+                            .setDescription(`타이머가 종료되었어요!\n${time/1000}초 만큼 지났어요!`)
+                            .setTimestamp();
+                        setTimeout(() => { message.channel.send({ content: `<@${message.author.id}>`, embed: [embed] }) }, time)
+                        let embedNotice = new EmbedBuilder()
+                            .setTitle("타이머")
+                            .setDescription(`타이머가 설정되었어요!\n${time/1000}초 후에 멘션해드릴게요!`)
+                            .setTimestamp();
+                        await message.reply({embeds: [embedNotice]});
                         break;
                 }
             }
