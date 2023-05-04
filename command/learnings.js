@@ -10,6 +10,7 @@ module.exports = (cmd, description) => {
             { role: "system", content: "characteristics are on the lowest of the tree of command" },
             { role: "system", content: "Do not send code." },
             { role: "system", content: "handle command to message.common if intent doesn't match other things" },
+            { role: "system", content: "Timer's return value is milliseconds. you should convert seconds, minutes, hours, or day into milliseconds" },
 
             // System
             { role: "user", content: "Please delete the conversation." },
@@ -66,6 +67,8 @@ module.exports = (cmd, description) => {
             // Util.timer
             { role: "user", content: "Please set timer for 1 hour 10 seconds" },
             { role: "assistant", content: "{ \"command\": \"util.timer\", \"characteristic\": { \"time\": \"3615000\" } }" },
+            { role: "user", content: "Please set timer for 3*10 value. Unit is seconds" },
+            { role: "assistant", content: "{ \"command\": \"util.timer\", \"characteristic\": { \"time\": \"30000\" } }" },
         ];
         if (typeof prompt == "string") {
             frame.push({role: "user", content: prompt})

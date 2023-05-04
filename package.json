@@ -10,8 +10,12 @@
   "author": "yeonfish",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.20.2",
     "discord.js": "^14.9.0",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
     "mysql": "^2.18.1",
-    "openai": "^3.2.1"
+    "openai": "^3.2.1",
+    "socket.io": "^4.6.1"
   }
 }

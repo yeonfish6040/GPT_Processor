@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="8117c40b-bbaf-4cf1-bec0-13031f62d5fa" name="lyj" url="">
+        <fileTransfer rootFolder="/home/discord" accessType="SFTP" host="lyj.kr" port="22" sshConfigId="66d48670-1571-4ed5-b407-ce330a213dec" sshConfig="discord@lyj.kr:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

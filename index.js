@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const { GatewayIntentBits, Events, PermissionsBitField, EmbedBuilder } = require("discord.js");
 const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.MessageContent] });
 
+const { app, port } = require("./functions/WebServer");
 
 const { Configuration, OpenAIApi } = require("openai");
 
@@ -122,21 +123,25 @@ const ansiCode = (color) => {
         "background_bright_white": "[107m",
         "background_bright_black": "[100m",
     }[color];
+
+}
+const randomColor = () => {
+    return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padEnd(6, '0');
 }
 
 // handlers
 
 /**
-* conversation: {
-*   (userID): {
+ * conversation: {
+ *   (userID): {
  *       messages: [
  *           { role: "user", content: "message" },
  *           { role: "assistant", content: "message" },
  *       ],
  *       lastTime: "",
  *   },
-* }
-*/
+ * }
+ */
 let conversation = {};
 async function onMessage(message) {
     if (message.author.bot) return;
@@ -302,14 +307,19 @@ async function onMessage(message) {
                         if (isNaN(time))
                             return await gotError(message, "올바른 형식의 시간이 아닙니다!");
                         time = parseInt(time);
-                        let embed = new EmbedBuilder()
-                            .setTitle("타이머")
-                            .setDescription(`타이머가 종료되었어요!\n${time/1000}초 만큼 지났어요!`)
-                            .setTimestamp();
-                        setTimeout(() => { message.channel.send({ content: `<@${message.author.id}>`, embed: [embed] }) }, time)
+
+                        setTimeout(() => {
+                            let embed = new EmbedBuilder()
+                                .setTitle("타이머")
+                                .setDescription(`타이머가 종료되었어요!\n${time/1000}초 만큼 지났어요!`)
+                                .setColor(randomColor())
+                                .setTimestamp();
+                            message.channel.send({ content: `<@${message.author.id}>`, embeds: [embed] })
+                        }, time)
                         let embedNotice = new EmbedBuilder()
                             .setTitle("타이머")
                             .setDescription(`타이머가 설정되었어요!\n${time/1000}초 후에 멘션해드릴게요!`)
+                            .setColor(randomColor())
                             .setTimestamp();
                         await message.reply({embeds: [embedNotice]});
                         break;
@@ -317,7 +327,13 @@ async function onMessage(message) {
             }
             await controller(res);
         }catch (e) {
-            console.error(e )
+            console.error(e)
         }
     }
 }
+
+
+// Web Server
+app.server.listen(port, () => {
+    console.log(`Express Https Server is running on port ${port}`);
+});
