@@ -66,9 +66,9 @@ module.exports = (cmd, description) => {
 
             // Util.timer
             { role: "user", content: "Please set timer for 1 hour 10 seconds" },
-            { role: "assistant", content: "{ \"command\": \"util.timer\", \"characteristic\": { \"time\": \"3615000\" } }" },
+            { role: "assistant", content: "{ \"command\": \"map.timer\", \"characteristic\": { \"time\": \"3615000\" } }" },
             { role: "user", content: "Please set timer for 3*10 value. Unit is seconds" },
-            { role: "assistant", content: "{ \"command\": \"util.timer\", \"characteristic\": { \"time\": \"30000\" } }" },
+            { role: "assistant", content: "{ \"command\": \"map.timer\", \"characteristic\": { \"time\": \"30000\" } }" },
         ];
         if (typeof prompt == "string") {
             frame.push({role: "user", content: prompt})
