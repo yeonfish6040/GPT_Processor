@@ -223,10 +223,7 @@ async function onMessage(message) {
                             let channel_permissions = message.channel.permissionsFor(uid).serialize();
                             let permission = `서버: ${message.guild.name}\n채널: <#${message.channel.id}>\n최고 권한: ${role.name}\n`;
                             permission += `서버 | 채널\n`;
-
-                            Object.keys(channel_permissions).forEach((key) => {
-                                permission += ` ${rolePermissions[key] ? "✅" : "❌"} \\|\\|\\| ${channel_permissions[key] ? "✅" : "❌"} - ${permissionTranslation[key]}\n`
-                            });
+                            permission += `${Object.entries(channel_permissions).map(([k, v]) => ` ${rolePermissions[k] ? "✅" : "❌"} \\|\\|\\| ${v ? "✅" : "❌"} - ${permissionTranslation[k]}`).join('\n')}`;
                             let embed = new EmbedBuilder()
                                 .setTitle(`${member.user.username}#${member.user.discriminator}님의 권한 목록`)
                                 .setDescription(permission)
