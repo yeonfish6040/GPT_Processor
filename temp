@@ -1,0 +1,4917 @@
+
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    }
+]
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    }
+]
+{"command":"message.common","characteristic":{"text":"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!"}}
+{"command":"message.common","characteristic":{"text":"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": ".. 나지금 문경에 있거든;;"
+    }
+]
+{"command":"message.common","characteristic":{"text":"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?"}}
+{"command":"message.common","characteristic":{"text":"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": ".. 나지금 문경에 있거든;;"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "그래"
+    }
+]
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": ".. 나지금 문경에 있거든;;"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "그래"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "그래 다른 음식점으로"
+    }
+]
+{"command":"message.common","characteristic":{"text":"문경에서 추천하는 음식점으로는 '문경순대국밥', '문경냉면', '문경닭갈비' 등이 있습니다. 어떤 가게가 좋을까요?"}}
+{"command":"message.common","characteristic":{"text":"문경에서 추천하는 음식점으로는 '문경순대국밥', '문경냉면', '문경닭갈비' 등이 있습니다. 어떤 가게가 좋을까요?"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": ".. 나지금 문경에 있거든;;"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "그래"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "그래 다른 음식점으로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"문경에서 추천하는 음식점으로는 '문경순대국밥', '문경냉면', '문경닭갈비' 등이 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "두번째 위치 읊어줘"
+    }
+]
+null
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": ".. 나지금 문경에 있거든;;"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "그래"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "그래 다른 음식점으로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"문경에서 추천하는 음식점으로는 '문경순대국밥', '문경냉면', '문경닭갈비' 등이 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "두번째 위치 읊어줘"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "2번째  주소 알려줘"
+    }
+]
+null
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": ".. 나지금 문경에 있거든;;"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "그래"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "그래 다른 음식점으로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"문경에서 추천하는 음식점으로는 '문경순대국밥', '문경냉면', '문경닭갈비' 등이 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "두번째 위치 읊어줘"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "2번째  주소 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "문경냉면 주소"
+    }
+]
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "우리가 한 대화 하나하나 말해주라 직접"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "내가 너랑 이야기 하며 가장 처음 말한게 뭐였지?"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "저녁메뉴 추천좀"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"어떤 종류의 음식을 원하시나요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 일식"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"일식 추천 메뉴로는 초밥, 우동, 라멘 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "난 초밥이 좋다!"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"초밥 추천 메뉴로는 연어, 참치, 광어, 새우 등이 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "연어로 근처에 맛집 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"근처 연어 맛집으로는 '스시조'와 '스시키'가 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "내 위치 어떻게 알아??"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "스시조로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"'스시조'는 서울시 강남구 역삼동에 위치해 있습니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": ".. 나지금 문경에 있거든;;"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 제가 잘못 알려드렸네요. 문경에는 '스시조'와 같은 연어 맛집이 없습니다. 다른 음식점을 추천해드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "그래"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "그래 다른 음식점으로"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"문경에서 추천하는 음식점으로는 '문경순대국밥', '문경냉면', '문경닭갈비' 등이 있습니다. 어떤 가게가 좋을까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "두번째 위치 읊어줘"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "2번째  주소 알려줘"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "문경냉면 주소"
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "대화 초기화"
+    }
+]
+{ "command": "system.reset" }
+{ "command": "system.reset" }
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "메시지 지워줘"
+    }
+]
+{ "command": "message.delete", "characteristic": { "user": "User_ID" } }
+
+위의 예시와 같이 User_ID를 지정해주시면 해당 유저가 보낸 메시지를 삭제할 수 있습니다.
+{ "command": "message.delete", "characteristic": { "user": "User_ID" } }
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": "메시지 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"User_ID\"}}"
+    },
+    {
+        "role": "user",
+        "content": "메시지 100개 삭제해줘"
+    }
+]
+{"command":"message.delete","characteristic":{"count":"100"}}
+{"command":"message.delete","characteristic":{"count":"100"}}
+        [
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    }
+]
+I'm here to help you. Do you have any other questions or requests?
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    }
+]
+null
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    }
+]
+{ "command": "message.common", "characteristic": { "text": "죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?" } }
+{ "command": "message.common", "characteristic": { "text": "죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?" } }
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    }
+]
+{"command":"message.common","characteristic":{"text":"저는 여기 있습니다. 무엇을 도와드릴까요?"}}
+{"command":"message.common","characteristic":{"text":"저는 여기 있습니다. 무엇을 도와드릴까요?"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    }
+]
+{"command":"message.common","characteristic":{"text":"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?"}}
+{"command":"message.common","characteristic":{"text":"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 10개를 지워줘"
+    }
+]
+{"command":"message.delete","characteristic":{"user":"307455931984379906","count":"10"}}
+{"command":"message.delete","characteristic":{"user":"307455931984379906","count":"10"}}
+DiscordAPIError[50013]: Missing Permissions
+    at handleErrors (/Users/iyeonjun/WebstormProjects/GPT_Processor/node_modules/@discordjs/rest/dist/index.js:640:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async SequentialHandler.runRequest (/Users/iyeonjun/WebstormProjects/GPT_Processor/node_modules/@discordjs/rest/dist/index.js:1021:23)
+    at async SequentialHandler.queueRequest (/Users/iyeonjun/WebstormProjects/GPT_Processor/node_modules/@discordjs/rest/dist/index.js:862:14)
+    at async REST.request (/Users/iyeonjun/WebstormProjects/GPT_Processor/node_modules/@discordjs/rest/dist/index.js:1387:22)
+    at async TextChannel.bulkDelete (/Users/iyeonjun/WebstormProjects/GPT_Processor/node_modules/discord.js/src/structures/interfaces/TextBasedChannel.js:294:7) {
+  requestBody: { files: undefined, json: { messages: [Array] } },
+  rawError: { message: 'Missing Permissions', code: 50013 },
+  code: 50013,
+  status: 403,
+  method: 'POST',
+  url: 'https://discord.com/api/v10/channels/906543068075917312/messages/bulk-delete'
+}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 10개를 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"307455931984379906\",\"count\":\"10\"}}"
+    },
+    {
+        "role": "user",
+        "content": "저녁 추천좀 해줘"
+    }
+]
+{"command":"message.common","characteristic":{"text":"무엇을 먹고 싶으세요? 한식, 중식, 일식, 양식 중에서 선택해주세요."}}
+{"command":"message.common","characteristic":{"text":"무엇을 먹고 싶으세요? 한식, 중식, 일식, 양식 중에서 선택해주세요."}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 10개를 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"307455931984379906\",\"count\":\"10\"}}"
+    },
+    {
+        "role": "user",
+        "content": "저녁 추천좀 해줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"무엇을 먹고 싶으세요? 한식, 중식, 일식, 양식 중에서 선택해주세요.\"}}"
+    },
+    {
+        "role": "user",
+        "content": "한식 먹고 싶1ㅓ"
+    }
+]
+{"command":"message.common","characteristic":{"text":"한식으로 추천드리는 음식은 '불고기'입니다. 맛있게 드세요!"}}
+{"command":"message.common","characteristic":{"text":"한식으로 추천드리는 음식은 '불고기'입니다. 맛있게 드세요!"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 10개를 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"307455931984379906\",\"count\":\"10\"}}"
+    },
+    {
+        "role": "user",
+        "content": "저녁 추천좀 해줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"무엇을 먹고 싶으세요? 한식, 중식, 일식, 양식 중에서 선택해주세요.\"}}"
+    },
+    {
+        "role": "user",
+        "content": "한식 먹고 싶1ㅓ"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"한식으로 추천드리는 음식은 '불고기'입니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "중식으로 바꿀래"
+    }
+]
+{"command":"message.common","characteristic":{"text":"중식으로 추천드리는 음식은 '짜장면'입니다. 맛있게 드세요!"}}
+{"command":"message.common","characteristic":{"text":"중식으로 추천드리는 음식은 '짜장면'입니다. 맛있게 드세요!"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 10개를 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"307455931984379906\",\"count\":\"10\"}}"
+    },
+    {
+        "role": "user",
+        "content": "저녁 추천좀 해줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"무엇을 먹고 싶으세요? 한식, 중식, 일식, 양식 중에서 선택해주세요.\"}}"
+    },
+    {
+        "role": "user",
+        "content": "한식 먹고 싶1ㅓ"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"한식으로 추천드리는 음식은 '불고기'입니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "중식으로 바꿀래"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"중식으로 추천드리는 음식은 '짜장면'입니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "메시지가 너무 많아\n15개만 지워봐"
+    }
+]
+{"command":"message.delete","characteristic":{"count":"15"}}
+{"command":"message.delete","characteristic":{"count":"15"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 10개를 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"307455931984379906\",\"count\":\"10\"}}"
+    },
+    {
+        "role": "user",
+        "content": "저녁 추천좀 해줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"무엇을 먹고 싶으세요? 한식, 중식, 일식, 양식 중에서 선택해주세요.\"}}"
+    },
+    {
+        "role": "user",
+        "content": "한식 먹고 싶1ㅓ"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"한식으로 추천드리는 음식은 '불고기'입니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "중식으로 바꿀래"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"중식으로 추천드리는 음식은 '짜장면'입니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "메시지가 너무 많아\n15개만 지워봐"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"count\":\"15\"}}"
+    },
+    {
+        "role": "user",
+        "content": "SKINMAKER의 메시지 5개를 지워줘"
+    }
+]
+{"command":"message.delete","characteristic":{"user":"SKINMAKER","count":"5"}}
+{"command":"message.delete","characteristic":{"user":"SKINMAKER","count":"5"}}
+[
+    {
+        "role": "system",
+        "content": "Response as json string only."
+    },
+    {
+        "role": "system",
+        "content": "Analyze message's intention and returns command"
+    },
+    {
+        "role": "system",
+        "content": "Command: {\"message\":{\"common\":{},\"delete\":{\"characteristic\":{\"user\":\"...\",\"content\":\"...\",\"role\":\"...\",\"count\":\"...\"}}},\"user\":{\"kick\":{\"characteristic\":{\"user\":\"...\"}},\"ban\":{\"characteristic\":{\"user\":\"...\"}},\"mute\":{\"characteristic\":{\"user\":\"...\",\"isMute\":\"...\"}}}}"
+    },
+    {
+        "role": "system",
+        "content": "Command description: {\"message\":{\"common\":{\"characteristic\":{\"text\":\"Just reply with your response.\"}},\"delete\":{\"user\":\"Delete messages which sent by specific user\",\"content\":\"Delete messages which contains specific content\",\"role\":\"Delete messages which sent by specific role\",\"count\":\"Delete specific amount of messages\"}},\"user\":{\"kick\":{\"user\":\"Kick specific user\"},\"ban\":{\"user\":\"Ban specific user\"},\"mute\":{\"user\":\"Mute specific user\",\"isMute\":\"Mute or unmute specific user. If false, unmute user, if true, mute user\"}}}"
+    },
+    {
+        "role": "system",
+        "content": "You can use multiple characteristics if user request contains multiple characteristics"
+    },
+    {
+        "role": "system",
+        "content": "You cannot contain characteristics and command not in the command"
+    },
+    {
+        "role": "system",
+        "content": "characteristics are on the lowest of the tree of command"
+    },
+    {
+        "role": "system",
+        "content": "Do not send code."
+    },
+    {
+        "role": "system",
+        "content": "handle command to message.common if intent doesn't match other things"
+    },
+    {
+        "role": "user",
+        "content": "Please delete the conversation."
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Please reset the conversation"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.reset\" }"
+    },
+    {
+        "role": "user",
+        "content": "Yeonfish said \"Plz delete my messages\""
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"system.need.user\", \"content\": \"yeonfish\" }"
+    },
+    {
+        "role": "user",
+        "content": "User_ID"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"User_ID\" } }"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Hello! How can I assist you today?\" } }"
+    },
+    {
+        "role": "user",
+        "content": "bye"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"Good Bye!\" } }"
+    },
+    {
+        "role": "user",
+        "content": "How are you?"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.common\", \"characteristic\": { \"text\": \"I'm fine! Thank you so much :)\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages sent from yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete five messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which contains word 'A'"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"content\": \"A\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Delete messages which send by admins"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"message.delete\", \"characteristic\": { \"role\": \"admin\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Kick yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.kick\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Ban yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.ban\", \"characteristic\": { \"user\": \"yeonfish\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Mute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"true\" } }"
+    },
+    {
+        "role": "user",
+        "content": "Unmute yeonfish"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"command\": \"user.mute\", \"characteristic\": { \"user\": \"yeonfish\", \"isMute\": \"false\" } }"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": ""
+    },
+    {
+        "role": "assistant",
+        "content": "null"
+    },
+    {
+        "role": "user",
+        "content": "뭐야"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"죄송합니다. 저는 이해할 수 없는 메시지입니다. 도와드릴 수 있는 다른 문제가 있으신가요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐해"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"저는 여기 있습니다. 무엇을 도와드릴까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "뭐 할 수 있는데"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"제가 할 수 있는 일은 다음과 같습니다. 메시지 삭제, 사용자 추방, 사용자 차단, 사용자 음소거, 사용자 음소거 해제입니다. 어떤 작업을 수행할까요?\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 10개를 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"307455931984379906\",\"count\":\"10\"}}"
+    },
+    {
+        "role": "user",
+        "content": "저녁 추천좀 해줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"무엇을 먹고 싶으세요? 한식, 중식, 일식, 양식 중에서 선택해주세요.\"}}"
+    },
+    {
+        "role": "user",
+        "content": "한식 먹고 싶1ㅓ"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"한식으로 추천드리는 음식은 '불고기'입니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "중식으로 바꿀래"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.common\",\"characteristic\":{\"text\":\"중식으로 추천드리는 음식은 '짜장면'입니다. 맛있게 드세요!\"}}"
+    },
+    {
+        "role": "user",
+        "content": "메시지가 너무 많아\n15개만 지워봐"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"count\":\"15\"}}"
+    },
+    {
+        "role": "user",
+        "content": "SKINMAKER의 메시지 5개를 지워줘"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"command\":\"message.delete\",\"characteristic\":{\"user\":\"SKINMAKER\",\"count\":\"5\"}}"
+    },
+    {
+        "role": "user",
+        "content": "<@307455931984379906> 의 메시지 5개를 지워줘"
+    }
+]
+{"command":"message.delete","characteristic":{"user":"307455931984379906","count":"5"}}
+{"command":"message.delete","characteristic":{"user":"307455931984379906","count":"5"}}
