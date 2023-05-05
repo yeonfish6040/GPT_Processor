@@ -54,17 +54,17 @@ const getIntent = (message) => {
             response = jsonReg.exec(response)[0]
             console.log(response)
             if (!response || response.length === 0) {
-                reject(null);
+                reject(503);
             }
             try {
                 response = JSON.parse(response);
 
             }catch (e) {
-                reject(null);
+                reject(500);
             }
             resolve(response);
         }).catch(() => {
-            reject(null);
+            reject(500);
         })
     });
 }
@@ -86,7 +86,7 @@ const bulkDelete = (message, messageList, log=true) => {
 const gotError = async (message, msg) => {
     message.reactions.resolve("✅").users.remove(config.Discord.Bot.Id)
     await message.react("❌");
-    await message.reply(ansify(`${ansiCode("red")}${msg}${ansiCode("reset")}`)).then((msg) => setTimeout(() => msg.delete(), 2000));
+    await message.reply(msg).then((msg) => setTimeout(() => msg.delete(), 2000));
 }
 
 const randomColor = () => {
@@ -130,11 +130,20 @@ async function onMessage(message) {
                 conversation[message.author.id] = { messages: [], lastTime: Date.now() };
             conversation[message.author.id].lastTime = Date.now();
             conversation[message.author.id]["messages"].push({ role: "user", content: userMsg });
-            let res = await getIntent(conversation[message.author.id]["messages"]);
-            if (!res) return await gotError(errMsg.general(`\n${ansiCode("red")}그런데.. 이번에는 오류가 아니라 GPT가 대답을 못했네요...?${ansiCode("reset")})`))
+            let res;
+            try {
+                res = await getIntent(conversation[message.author.id]["messages"]);
+                await message.react("✅");
+                message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
+            }catch (e) {
+                await message.react("✅");
+                message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
+                if (e === 503)
+                    return await gotError(message, errMsg.general(`\n${ansiCode("red")}그런데.. 이번에는 오류가 아니라 GPT가 대답을 못했네요...?${ansiCode("reset")})`))
+                else if (e === 500)
+                    return await gotError(message, errMsg.general())
+            }
             conversation[message.author.id]["messages"].push({ role: "assistant", content: JSON.stringify(res) });
-            await message.react("✅");
-            message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
             let controller = async (res) => {
                 switch (res.command) {
                     case "system.reset":
