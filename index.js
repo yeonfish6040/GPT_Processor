@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const os = require('os');
 
 const Discord = require("discord.js");
 const { GatewayIntentBits, Events, PermissionsBitField, EmbedBuilder } = require("discord.js");
@@ -23,8 +24,14 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+const chartjs = require("chart.js");
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
+let uptime;
 client.on(Events.ClientReady, () => {
-    console.log("Bot is ready!");
+    uptime = Date.now();
+    console.log("Bot started at " + new Date(uptime).toLocaleString() + " as " + client.user.tag);
 });
 
 client.on(Events.MessageCreate, onMessage);
@@ -98,6 +105,11 @@ const isNaN = (s) => {
     return regex.test(s);
 }
 
+const range = (start, end) => {
+    if(start === end) return [start];
+    return [start, ...range(start + 1, end)];
+}
+
 // handlers
 
 /**
@@ -163,6 +175,84 @@ async function onMessage(message) {
                         await message.react("✅");
                         message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
                         await controller(res2);
+                        break;
+                    case "system.info":
+                        let now = Date.now();
+                        let uptimeFixed = now - uptime;
+                        let uptimeString = `${Math.floor(uptimeFixed / 1000 / 60 / 60)}시간 ${Math.floor(uptimeFixed / 1000 / 60) % 60}분 ${Math.floor(uptimeFixed / 1000) % 60}초`
+                        let memoryUsage = `${Math.floor(process.memoryUsage().heapUsed / 1024 / 1024)}MB`
+
+                        let canvas = new JSDOM("<canvas></canvas>");
+                        dom = canvas.window.document;
+                        let ctx = dom.querySelector("canvas").getContext("2d");
+                        let data = {
+                            labels: range(1, cpuUsages.length),
+                            datasets: [
+                                {
+                                    label: "CPU",
+                                    data: cpuUsages,
+                                    borderColor: "blue",
+                                    backgroundColor: "rgba(0, 0, 255, 0.2)",
+                                    borderWidth: 1,
+                                    fill: "origin"
+                                },
+                                {
+                                    label: "Memory",
+                                    data: memoryUsages,
+                                    borderColor: "red",
+                                    backgroundColor: "rgba(255, 0, 0, 0.2)",
+                                    borderWidth: 1,
+                                    fill: "origin"
+                                }
+                            ]
+                        };
+                        console.log(data.datasets[0].data)
+                        let max;
+                        if (cpuUsages[cpuUsages.length - 1] > 50 || memoryUsages[memoryUsages.length - 1] > 50)
+                            max = 100;
+                        else
+                            max = cpuUsages[cpuUsages.length - 1] >= memoryUsages[memoryUsages.length - 1] ? Math.ceil(cpuUsages[cpuUsages.length - 1])+5 : Math.ceil(memoryUsages[memoryUsages.length - 1])+5;
+                        let options = {
+                            radius: 0,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'CPU, Memory Usage (%)'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    min: 0,
+                                    max: max,
+                                    stepSize: 10
+                                }
+                            }
+                        };
+                        new chartjs(ctx, {
+                            type: "line",
+                            data: data,
+                            options: options
+                        })
+                        let img = dom.querySelector("canvas").toDataURL().replace(/^data:image\/png;base64,/, "");
+                        let filename = `chart_usage_${Date.now()}.png`;
+                        fs.writeFileSync(path.join(__dirname, `functions/web/static/img/${filename}`), img, "base64");
+                        let info = new EmbedBuilder()
+                            .setTitle("봇 정보")
+                            .addFields(
+                                { name: "봇", value: client.user.tag, inline: true},
+                                { name: "모듈", value: "OpenAI GPT 3.5 turbo", inline: true},
+                                { name: "서버 수", value: client.guilds.cache.size.toString(), inline: true},
+                            )
+                            .addFields(
+                                { name: "업타임", value: uptimeString, inline: true},
+                                { name: "웹소켓 핑", value: client.ws.ping.toString() + "ms", inline: true},
+                                { name: "메모리 사용량", value: memoryUsage, inline: true},
+                            )
+                            .setTimestamp()
+                            .setColor(randomColor())
+                            .setImage("https://lyj.kr:18001/img/" + filename)
+                            .setFooter({ text: "봇 정보", iconURL: client.user.avatarURL()});
+                        message.reply({ embeds: [info] })
                         break;
 
                     case "message.common":
@@ -276,7 +366,7 @@ async function onMessage(message) {
                             await gotError(message, errMsg.general())
                         }
                         break;
-                    case "map.timer":
+                    case "util.timer":
                         let time = res.characteristic.time;
                         if (isNaN(time))
                             return await gotError(message, "올바른 형식의 시간이 아닙니다!");
@@ -305,6 +395,24 @@ async function onMessage(message) {
         }
     }
 }
+
+// Logger
+let cpuUsages = [];
+let memoryUsages = [];
+setInterval(() => {
+    let total = Object.values(os.cpus()[0].times).reduce(
+        (acc, tv) => acc + tv, 0
+    );
+    let usage = process.cpuUsage();
+    let currentCPUUsage = (usage.user + usage.system);
+    cpuUsages.push((currentCPUUsage/total*100).toFixed(3));
+    const { rss, heapTotal, heapUsed } = process.memoryUsage()
+    memoryUsages.push((heapUsed / os.totalmem() * 100).toFixed(3));
+    if (cpuUsages.length > 500)
+        cpuUsages.shift();
+    if (memoryUsages.length > 500)
+        memoryUsages.shift();
+}, 10000)
 
 
 // Web Server
