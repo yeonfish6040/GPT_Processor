@@ -126,13 +126,13 @@ async function onMessage(message) {
             const userMsg = message.content.slice(config.Discord.Bot.Prefix.length).trim();
             console.log(message.author.id+" | "+message.author.username+"#"+message.author.discriminator+": "+userMsg)
             await message.react("🌀");
-            let res = await getIntent(conversation[message.author.id]["messages"]);
             console.log(response)
             if (!res) return await gotError(errMsg.general(`\n${ansiCode("red")}그런데.. 이번에는 오류가 아니라 GPT가 대답을 못했네요...?${ansiCode("reset")})`))
             if (!conversation[message.author.id])
                 conversation[message.author.id] = { messages: [], lastTime: Date.now() };
             conversation[message.author.id].lastTime = Date.now();
             conversation[message.author.id]["messages"].push({ role: "user", content: userMsg });
+            let res = await getIntent(conversation[message.author.id]["messages"]);
             conversation[message.author.id]["messages"].push({ role: "assistant", content: JSON.stringify(res) });
             await message.react("✅");
             message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
