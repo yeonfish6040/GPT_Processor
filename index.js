@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 const Discord = require("discord.js");
 const { GatewayIntentBits, Events, PermissionsBitField, EmbedBuilder } = require("discord.js");
 const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.MessageContent] });
@@ -124,7 +127,8 @@ async function onMessage(message) {
             console.log(message.author.id+" | "+message.author.username+"#"+message.author.discriminator+": "+userMsg)
             await message.react("🌀");
             let res = await getIntent(conversation[message.author.id]["messages"]);
-            if (!res) return await gotError()
+            console.log(response)
+            if (!res) return await gotError(errMsg.general(`\n${ansiCode("red")}그런데.. 이번에는 오류가 아니라 GPT가 대답을 못했네요...?${ansiCode("reset")})`))
             if (!conversation[message.author.id])
                 conversation[message.author.id] = { messages: [], lastTime: Date.now() };
             conversation[message.author.id].lastTime = Date.now();
@@ -132,8 +136,6 @@ async function onMessage(message) {
             conversation[message.author.id]["messages"].push({ role: "assistant", content: JSON.stringify(res) });
             await message.react("✅");
             message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
-            if (!res)
-                return await gotError(errMsg.general())
             let controller = async (res) => {
                 switch (res.command) {
                     case "system.reset":
