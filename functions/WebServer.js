@@ -5,6 +5,9 @@ const SocketIO = require("socket.io")
 const path = require("path")
 const fs = require("fs")
 
+// Crypto
+const crypto = require("crypto")
+
 // request
 const { request } = require('undici');
 
@@ -43,7 +46,7 @@ app.use("/css", express.static(path.join(__dirname, 'web/static/css')));
 
 app.get("", (req, res) => res.render("index"));
 
-app.get("/connectDriver", async (req, res) => {
+app.get("/connect/driver", async (req, res) => {
     if (req.query.code && req.query.state) {
         const tokenResponseData = await request('https://discord.com/api/oauth2/token', {
             method: 'POST',
@@ -52,7 +55,7 @@ app.get("/connectDriver", async (req, res) => {
                 client_secret: config.Discord.Secret,
                 code: req.query.code,
                 grant_type: 'authorization_code',
-                redirect_uri: `https://lyj.kr:18001/connectDriver`,
+                redirect_uri: `https://lyj.kr:18001/connect/driver`,
                 scope: 'identify',
             }).toString(),
             headers: {
@@ -66,24 +69,23 @@ app.get("/connectDriver", async (req, res) => {
             },
         });
         userResult = await userResult.body.json()
-        let query = "SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '" + req.query.state + "'";
+        let query = "SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}' OR `uid` = '{1}'".format(req.query.state, userResult.id);
         conn.query(query, (err, result) => {
             if (err) throw err;
             if (result.length == 1) conn.query(
-                "UPDATE `GPT_Processor_Drivers` SET `driver` = '" + req.query.state + "', `uid` = '" + userResult.id + "' WHERE `driver` = '" + req.query.state + "'"
+                "UPDATE `GPT_Processor_Drivers` SET `driver` = '{0}', `uid` = '{1}' WHERE `uid` = '{2}'".format(req.query.state, userResult.id, userResult.id)
                 , (err, result) => {
                     if (err) throw err;
                     res.writeHead(200, { 'Content-Type': 'text/html' }).end("재연동 성공");
                 }
             );
             else conn.query(
-                "INSERT INTO `GPT_Processor_Drivers` (`driver`, `uid`) VALUES ('" +req.query.state + "', '"+userResult.id+"')",
+                "INSERT INTO `GPT_Processor_Drivers` (`driver`, `uid`) VALUES ('{0}', '{1}')".format(req.query.state, userResult.id),
                 (err, result) => {
                     if (err) throw err;
                     res.writeHead(200, { 'Content-Type': 'text/html' }).end("연동 성공");
                 }
             )
-
         });
     }else
         res.writeHead(400).end()
@@ -92,11 +94,84 @@ app.get("/connectDriver", async (req, res) => {
 
 app.get("/img", async (req, res) => {
     let files = fs.readdirSync(path.join(__dirname, "web/static/img/"));
-    console.log(files)
+    files.forEach((file) => {
+        if (Date.now()-parseInt(file.split("_")[file.length-1]) > 1209600)
+            fs.unlinkSync(path.join(__dirname, "web/static/img/"+file));
+    })
     let file = "web/static/img/"+req.query.img;
     if (!fs.existsSync(path.join(__dirname, file))) return res.writeHead(404).end()
     res.writeHead(200, {'Content-Type': 'image/png'}).end(fs.readFileSync(path.join(__dirname, file)));
 });
+
+app.post("/check/driver", (req, res) => {
+    if (req.body.uuid) {
+        let query = "SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'".format(req.body.uuid);
+        conn.query(query, (err, result) => {
+            if (err) res.writeHead(500).end()
+            else res.writeHead(200).end(result.length == 1 ? "true" : "false")
+        })
+    }else
+        res.writeHead(422).end()
+})
+
+app.post("/check/token", (req, res) => {
+    if (req.body.uuid) {
+        let query = "SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'".format(req.body.uuid);
+        console.log(query)
+        conn.query(query, (err, result) => {
+            if (err) res.writeHead(500).end()
+            else res.writeHead(200).end(result[0].token ? "true" : "false")
+        })
+    }else
+        res.writeHead(422).end()
+});
+
+app.post("/set/token", (req, res) => {
+    if (req.body.token && req.body.uuid) {
+        let query = "UPDATE GPT_Processor_Drivers SET `token` = '{0}' WHERE `driver` = '{1}'".format(req.body.token, req.body.uuid);
+        conn.query(query, (err, result) => {
+            if (err) res.writeHead(500).end()
+            else res.writeHead(200).end()
+        })
+    }else
+        res.writeHead(422).end()
+});
+
+app.post("/crypto/keypair", (req, res) => {
+    let key;
+    try {
+        key = keypair(req.body.passphrase)
+    }catch (e) {
+        res.status(500).json({ error: e.toString() })
+    }
+    res.status(200).json({ publicKey: key.publicKey, privateKey: key.privateKey })
+});
+
+app.post("/crypto/encrypt", (req, res) => {
+    let encrypted
+    try {
+        encrypted = encrypt(req.body.publicKey, req.body.text)
+    }catch (e) {
+        res.status(500).json({ error: e.toString() })
+    }
+
+    res.json({ encrypted: encrypted.toString("base64") })
+})
+app.post("/crypto/decrypt", (req, res) => {
+    let decrypted
+    try {
+        let key = crypto.createPrivateKey({
+            key: req.body.privateKey,
+            format: "pem",
+            passphrase: req.body.passphrase || "default"
+        });
+
+        decrypted = decrypt(key, req.body.text, req.body.passphrase)
+    }catch (e) {
+        res.status(500).json({ error: e.toString() })
+    }
+    res.json({ decrypted: decrypted.toString("utf-8") })
+})
 
 app.server = https.createServer({
     ca: fs.readFileSync(path.join(__dirname, "../cert/fullchain.pem")),
@@ -107,7 +182,75 @@ app.server = https.createServer({
 app.io = SocketIO()
 app.io.attach(app.server)
 
+let sockets = {}
+let keypairs = {}
+app.io.on("connection", (socket) => {
+    socket.on('connectDriver', (uuid) => {
+        let query = "SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}'".format(uuid);
+        console.log(query)
+        conn.query(query, (err, result) => {
+            if (err) throw err;
+            if (result.length == 1) {
+                socket.emit("connectDriver", result[0].uid);
+                sockets[uuid] = socket;
+            } else {
+                socket.emit("connectDriver", null);
+            }
+        });
+    })
+
+    socket.on('keypair', (uuid) => {
+        try {
+            let key = keypair(uuid);
+            keypairs[uuid] = key;
+            socket.emit("keypair", { publicKey: key.publicKey, privateKey: key.privateKey })
+        }catch (e) {
+            socket.emit("keypair", { error: e.toString() })
+        }
+    })
+});
+
+String.prototype.format = function () {
+    let formatted = this;
+    for( let arg in arguments ) {
+        formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+    }
+    return formatted;
+};
+
+const keypair = (passphrase) => {
+    let key = crypto.generateKeyPairSync("rsa", {
+        modulusLength: 2048,
+        publicKeyEncoding: {
+            type: "pkcs1",
+            format: "pem"
+        },
+        privateKeyEncoding: {
+            type: "pkcs8", // Key Encoding 방식 type: 'sec1' | 'pkcs8';
+            format: "pem",
+            cipher: "aes-256-cbc", // 알고리즘
+            passphrase: passphrase || "default"
+        }
+    })
+}
+
+const encrypt = (text, publicKey) => {
+    return crypto.publicEncrypt(publicKey, Buffer.from(text));
+}
+
+const decrypt = (text, privateKey, passphrase=null) => {
+    let key = crypto.createPrivateKey({
+        key: privateKey,
+        format: "pem",
+        passphrase: passphrase || "default"
+    });
+
+    return crypto.privateDecrypt(key, Buffer.from(text, "base64"));
+}
+
 module.exports = {
     app: app,
-    port: port
+    port: port,
+    encrypt: encrypt,
+    decrypt: decrypt,
 }

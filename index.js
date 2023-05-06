@@ -11,7 +11,18 @@ const config = require("./config_GPT_Processor.json");
 
 const Discord = require("discord.js");
 const { GatewayIntentBits, Events, PermissionsBitField, EmbedBuilder } = require("discord.js");
-const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.MessageContent] });
+const client = new Discord.Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.MessageContent
+    ] ,
+    allowedMentions: {
+        parse: ['users', 'roles'],
+        repliedUser: true
+    }
+});
 
 const { Koreanbots } = require("koreanbots");
 koreanbots = new Koreanbots({
