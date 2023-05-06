@@ -2,41 +2,49 @@ const fs = require("fs");
 const path = require("path");
 const os = require('os');
 
+const { app, port } = require("./functions/WebServer");
+const { ansify, ansiCode } = require("./map/ansi");
+const req = require("./command/learnings")(require("./command/commands"), require("./command/descriptions"));
+const permissionTranslation = require("./map/translate");
+const errMsg = require("./map/error");
+const config = require("./config_GPT_Processor.json");
+
 const Discord = require("discord.js");
 const { GatewayIntentBits, Events, PermissionsBitField, EmbedBuilder } = require("discord.js");
 const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.MessageContent] });
 
-const { app, port } = require("./functions/WebServer");
+const { Koreanbots } = require("koreanbots");
+koreanbots = new Koreanbots({
+    api: {
+        token: config.KoreanBots.Token
+    },
+    clientID: config.Discord.Id
+})
+let update = servers => koreanbots.mybot.update({ servers, shards: client.shard?.count })
+    .then(res => res.code === 304 ? null : console.log("Server count updated.", JSON.stringify(res)))
+    .catch(console.error)
 
 const { Configuration, OpenAIApi } = require("openai");
-
-const { ansify, ansiCode } = require("./map/ansi");
-
-const errMsg = require("./map/error");
-
-const req = require("./command/learnings")(require("./command/commands"), require("./command/descriptions"));
-const permissionTranslation = require("./map/translate");
-
-const config = require("./config.json");
-
 const configuration = new Configuration({
     apiKey: config.OpenAI.API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 const chartjs = require("chart.js");
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
+const { JSDOM } = require("jsdom");
 
 let uptime;
 client.on(Events.ClientReady, () => {
     uptime = Date.now();
     console.log("Bot started at " + new Date(uptime).toLocaleString() + " as " + client.user.tag);
+
+    update(client.guilds.cache.size);
+    setInterval(update, 60000, client.guilds.cache.size);
 });
 
 client.on(Events.MessageCreate, onMessage);
 
-client.login(config.Discord.Bot.Token);
+client.login(config.Discord.Token);
 
 // functions
 const runPrompt = async (messages, ) => {
@@ -91,7 +99,7 @@ const bulkDelete = (message, messageList, log=true) => {
 }
 
 const gotError = async (message, msg) => {
-    message.reactions.resolve("✅").users.remove(config.Discord.Bot.Id)
+    message.reactions.resolve("✅").users.remove(config.Discord.Id)
     await message.react("❌");
     await message.reply(msg).then((msg) => setTimeout(() => msg.delete(), 2000));
 }
@@ -108,6 +116,23 @@ const isNaN = (s) => {
 const range = (start, end) => {
     if(start === end) return [start];
     return [start, ...range(start + 1, end)];
+}
+
+let cpuUsages = [];
+let memoryUsages = [];
+const logUsage = () => {
+    let total = Object.values(os.cpus()[0].times).reduce(
+        (acc, tv) => acc + tv, 0
+    );
+    let usage = process.cpuUsage();
+    let currentCPUUsage = (usage.user + usage.system);
+    cpuUsages.push((currentCPUUsage/total*100).toFixed(3));
+    const { rss, heapTotal, heapUsed } = process.memoryUsage()
+    memoryUsages.push((rss / os.totalmem() * 100).toFixed(3));
+    if (cpuUsages.length > 500)
+        cpuUsages.shift();
+    if (memoryUsages.length > 500)
+        memoryUsages.shift();
 }
 
 // handlers
@@ -133,9 +158,9 @@ async function onMessage(message) {
         return message.reply("완료했습니다!");
     }
 
-    if (message.content.startsWith(config.Discord.Bot.Prefix)) {
+    if (message.content.startsWith(config.Discord.Prefix)) {
         try {
-            const userMsg = message.content.slice(config.Discord.Bot.Prefix.length).trim();
+            const userMsg = message.content.slice(config.Discord.Prefix.length).trim();
             console.log(message.author.id+" | "+message.author.username+"#"+message.author.discriminator+": "+userMsg)
             await message.react("🌀");
             if (!conversation[message.author.id])
@@ -146,10 +171,10 @@ async function onMessage(message) {
             try {
                 res = await getIntent(conversation[message.author.id]["messages"]);
                 await message.react("✅");
-                message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
+                message.reactions.resolve("🌀").users.remove(config.Discord.Id)
             }catch (e) {
                 await message.react("✅");
-                message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
+                message.reactions.resolve("🌀").users.remove(config.Discord.Id)
                 if (e === 503)
                     return await gotError(message, errMsg.general(`\n${ansiCode("red")}그런데.. 이번에는 오류가 아니라 GPT가 대답을 못했네요...?${ansiCode("reset")})`))
                 else if (e === 500)
@@ -165,7 +190,7 @@ async function onMessage(message) {
                     case "system.need.user":
                         let user = message.guild.members.cache.find((member) => member.name === res.content).id
                         await message.react("🌀");
-                        message.reactions.resolve("✅").users.remove(config.Discord.Bot.Id)
+                        message.reactions.resolve("✅").users.remove(config.Discord.Id)
                         if (!conversation[message.author.id])
                             conversation[message.author.id] = {messages: [], lastTime: Date.now()};
                         conversation[message.author.id].lastTime = Date.now();
@@ -173,14 +198,14 @@ async function onMessage(message) {
                         let res2 = await getIntent(conversation[message.author.id]["messages"]);
                         conversation[message.author.id]["messages"].push({role: "assistant", content: JSON.stringify(res)});
                         await message.react("✅");
-                        message.reactions.resolve("🌀").users.remove(config.Discord.Bot.Id)
+                        message.reactions.resolve("🌀").users.remove(config.Discord.Id)
                         await controller(res2);
                         break;
                     case "system.info":
                         let now = Date.now();
                         let uptimeFixed = now - uptime;
                         let uptimeString = `${Math.floor(uptimeFixed / 1000 / 60 / 60)}시간 ${Math.floor(uptimeFixed / 1000 / 60) % 60}분 ${Math.floor(uptimeFixed / 1000) % 60}초`
-                        let memoryUsage = `${Math.floor(process.memoryUsage().heapUsed / 1024 / 1024)}MB`
+                        let memoryUsage = `${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`
 
                         let canvas = new JSDOM("<canvas></canvas>");
                         dom = canvas.window.document;
@@ -206,7 +231,7 @@ async function onMessage(message) {
                                 }
                             ]
                         };
-                        console.log(data.datasets[0].data)
+                        console.log(data.datasets[0].data, data.datasets[1].data)
                         let max;
                         if (cpuUsages[cpuUsages.length - 1] > 50 || memoryUsages[memoryUsages.length - 1] > 50)
                             max = 100;
@@ -366,6 +391,46 @@ async function onMessage(message) {
                             await gotError(message, errMsg.general())
                         }
                         break;
+                    case "user.mute":
+                        if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.MuteMembers))
+                            return await gotError(message, errMsg.permission.user`${permissionTranslation.MuteMembers}`)
+                        if (!message.guild.permissionsFor(client.user.id).has(PermissionsBitField.Flags.ManageRoles))
+                            return await gotError(message, errMsg.permission.bot`${permissionTranslation.ManageRoles}`)
+                        let role = message.guild.roles.cache.find((role) => role.name === "Muted");
+                        if (!role) {
+                            try {
+                                await message.guild.roles.create({
+                                    name: "Muted",
+                                    color: "#000000",
+                                    permissions: []
+                                })
+                                message.guild.channels.cache.forEach(async channel => {
+                                    const mutedRole = await channel.guild.roles.cache.find((role) => role.name === 'Muted');
+                                    await channel.permissionOverwrites.create(mutedRole, {
+                                        SEND_MESSAGES: false
+                                    });
+                                });
+                                role = await message.guild.roles.cache.find((role) => role.name === "Muted");
+                            }catch (e) {
+                                return await gotError(message, errMsg.general("Muted 역할생성에 실패하였습니다"))
+                            }
+                            try {
+                                if (res.characteristic.isMute == true) {
+                                    if (message.guild.members.cache.find(m => m.id === res.characteristic.user).roles.find(role => role.name === "Muted"))
+                                        return await gotError(message, "이미 뮤트된 유저입니다!");
+                                    await message.guild.members.cache.find(m => m.id === res.characteristic.user).roles.add(role);
+                                    message.reply("완료했습니다!")
+                                }else {
+                                    if (!message.guild.members.cache.find(m => m.id === res.characteristic.user).roles.find(role => role.name === "Muted"))
+                                        return await gotError(message, "뮤트된 유저가 아닙니다!");
+                                    await message.guild.members.cache.find(m => m.id === res.characteristic.user).roles.remove(role);
+                                    message.reply("완료했습니다!")
+                                }
+                            }catch (e) {
+                                await gotError(message, errMsg.general("유저 역할을 수정하는 도중 오류가 발생하였습니다."))
+                            }
+                        }
+                        break;
                     case "util.timer":
                         let time = res.characteristic.time;
                         if (isNaN(time))
@@ -397,22 +462,8 @@ async function onMessage(message) {
 }
 
 // Logger
-let cpuUsages = [];
-let memoryUsages = [];
-setInterval(() => {
-    let total = Object.values(os.cpus()[0].times).reduce(
-        (acc, tv) => acc + tv, 0
-    );
-    let usage = process.cpuUsage();
-    let currentCPUUsage = (usage.user + usage.system);
-    cpuUsages.push((currentCPUUsage/total*100).toFixed(3));
-    const { rss, heapTotal, heapUsed } = process.memoryUsage()
-    memoryUsages.push((heapUsed / os.totalmem() * 100).toFixed(3));
-    if (cpuUsages.length > 500)
-        cpuUsages.shift();
-    if (memoryUsages.length > 500)
-        memoryUsages.shift();
-}, 10000)
+logUsage()
+setInterval(logUsage, 10000)
 
 
 // Web Server
