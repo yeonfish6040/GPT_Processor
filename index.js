@@ -49,8 +49,10 @@ client.on(Events.ClientReady, () => {
     uptime = Date.now();
     console.log("Bot started at " + new Date(uptime).toLocaleString() + " as " + client.user.tag);
 
-    update(client.guilds.cache.size);
-    setInterval(update, 60000, client.guilds.cache.size);
+    try {
+        update(client.guilds.cache.size);
+        setInterval(update, 60000, client.guilds.cache.size);
+    }catch (e) {}
 });
 
 client.on(Events.MessageCreate, onMessage);
@@ -140,9 +142,9 @@ const logUsage = () => {
     cpuUsages.push((currentCPUUsage/total*100).toFixed(3));
     const { rss, heapTotal, heapUsed } = process.memoryUsage()
     memoryUsages.push((rss / os.totalmem() * 100).toFixed(3));
-    if (cpuUsages.length > 500)
+    if (cpuUsages.length > 1000)
         cpuUsages.shift();
-    if (memoryUsages.length > 500)
+    if (memoryUsages.length > 1000)
         memoryUsages.shift();
 }
 
@@ -170,6 +172,7 @@ async function onMessage(message) {
     }
 
     if (message.content.startsWith(config.Discord.Prefix)) {
+        let bot_permission = message.guild.members.cache.find((member) => member.user.id === config.Discord.Id).roles.highest.permissions;
         try {
             const userMsg = message.content.slice(config.Discord.Prefix.length).trim();
             console.log(message.author.id+" | "+message.author.username+"#"+message.author.discriminator+": "+userMsg)
@@ -219,7 +222,7 @@ async function onMessage(message) {
                         let memoryUsage = `${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`
 
                         let canvas = new JSDOM("<canvas></canvas>");
-                        dom = canvas.window.document;
+                        let dom = canvas.window.document;
                         let ctx = dom.querySelector("canvas").getContext("2d");
                         let data = {
                             labels: range(1, cpuUsages.length),
@@ -242,12 +245,6 @@ async function onMessage(message) {
                                 }
                             ]
                         };
-                        console.log(data.datasets[0].data, data.datasets[1].data)
-                        let max;
-                        if (cpuUsages[cpuUsages.length - 1] > 50 || memoryUsages[memoryUsages.length - 1] > 50)
-                            max = 100;
-                        else
-                            max = cpuUsages[cpuUsages.length - 1] >= memoryUsages[memoryUsages.length - 1] ? Math.ceil(cpuUsages[cpuUsages.length - 1])+5 : Math.ceil(memoryUsages[memoryUsages.length - 1])+5;
                         let options = {
                             radius: 0,
                             plugins: {
@@ -259,7 +256,7 @@ async function onMessage(message) {
                             scales: {
                                 y: {
                                     min: 0,
-                                    max: max,
+                                    max: 100,
                                     stepSize: 10
                                 }
                             }
@@ -297,10 +294,10 @@ async function onMessage(message) {
                     case "message.delete":
                         console.log(message.channel.permissionsFor(message.author))
                         // check if user has permission
-                        if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.ManageMessages)) {
-                            await gotError(message, errMsg.permission.user`${permissionTranslation.ManageMessages}`)
-                            break;
-                        }
+                        if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.ManageMessages))
+                            return await gotError(message, errMsg.permission.user`${permissionTranslation.ManageMessages}`)
+                        if (!message.channel.permissionsFor(client.user).has(PermissionsBitField.Flags.ManageMessages))
+                            return await gotError(message, errMsg.permission.bot`${permissionTranslation.ManageMessages}`)
                         try {
                             let messageList = await message.channel.messages.fetch()
                             if (res.characteristic.hasOwnProperty("count")) {
@@ -361,7 +358,7 @@ async function onMessage(message) {
                             permission += `서버 | 채널\n`;
                             permission += `${Object.entries(channel_permissions).map(([k, v]) => ` ${rolePermissions[k] ? "✅" : "❌"} \\|\\|\\| ${v ? "✅" : "❌"} - ${permissionTranslation[k]}`).join('\n')}`;
                             let embed = new EmbedBuilder()
-                                .setTitle(`${member.user.username}#${member.user.discriminator}님의 권한 목록`)
+                                .setTitle(`${member.user.tag}님의 권한 목록`)
                                 .setDescription(permission)
                                 .setTimestamp();
                             message.reply({embeds: [embed]});
@@ -370,10 +367,10 @@ async function onMessage(message) {
                         }
                         break;
                     case "user.kick":
-                        if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.KickMembers)) {
-                            await gotError(message, errMsg.permission.user`${permissionTranslation.KickMembers}`)
-                            break;
-                        }
+                        if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.KickMembers))
+                            return await gotError(message, errMsg.permission.user`${permissionTranslation.KickMembers}`)
+                        if (!bot_permission.has(PermissionsBitField.Flags.KickMembers))
+                            return await gotError(message, errMsg.permission.bot`${permissionTranslation.KickMembers}`)
                         try {
                             let uid = (/[0-9]+/).exec(res.characteristic.user)[0];
                             let member = message.guild.members.cache.find((member) => member.user.id === uid);
@@ -384,10 +381,10 @@ async function onMessage(message) {
                         }
                         break;
                     case "user.ban":
-                        if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.BanMembers)) {
-                            await gotError(message, errMsg.permission.user`${permissionTranslation.BanMembers}`)
-                            break;
-                        }
+                        if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.BanMembers))
+                            return await gotError(message, errMsg.permission.user`${permissionTranslation.BanMembers}`);
+                        if (!bot_permission.has(PermissionsBitField.Flags.BanMembers))
+                            return await gotError(message, errMsg.permission.bot`${permissionTranslation.BanMembers}`);
                         try {
                             let uid = (/[0-9]+/).exec(res.characteristic.user)[0];
                             if (res.characteristic.unban === "false") {
@@ -396,7 +393,7 @@ async function onMessage(message) {
                             }else {
                                 await message.guild.members.unban(client.users.cache.get(uid));
                             }
-                            message.reply("완료했습니다!")
+                            message.reply("완료했습니다!");
                         }catch (e) {
                             console.error(e)
                             await gotError(message, errMsg.general())
@@ -405,7 +402,7 @@ async function onMessage(message) {
                     case "user.mute":
                         if (!message.channel.permissionsFor(message.author).has(PermissionsBitField.Flags.MuteMembers))
                             return await gotError(message, errMsg.permission.user`${permissionTranslation.MuteMembers}`)
-                        if (!message.guild.permissionsFor(client.user.id).has(PermissionsBitField.Flags.ManageRoles))
+                        if (!bot_permission.has(PermissionsBitField.Flags.ManageRoles))
                             return await gotError(message, errMsg.permission.bot`${permissionTranslation.ManageRoles}`)
                         let role = message.guild.roles.cache.find((role) => role.name === "Muted");
                         if (!role) {
@@ -474,7 +471,7 @@ async function onMessage(message) {
 
 // Logger
 logUsage()
-setInterval(logUsage, 10000)
+setInterval(logUsage, 1000)
 
 
 // Web Server

@@ -46,7 +46,7 @@ app.use("/css", express.static(path.join(__dirname, 'web/static/css')));
 
 app.get("", (req, res) => res.render("index"));
 
-app.get("/connect/driver", async (req, res) => {
+app.get("/link/driver", async (req, res) => {
     if (req.query.code && req.query.state) {
         const tokenResponseData = await request('https://discord.com/api/oauth2/token', {
             method: 'POST',
@@ -55,7 +55,7 @@ app.get("/connect/driver", async (req, res) => {
                 client_secret: config.Discord.Secret,
                 code: req.query.code,
                 grant_type: 'authorization_code',
-                redirect_uri: `https://lyj.kr:18001/connect/driver`,
+                redirect_uri: `https://lyj.kr:18001/link/driver`,
                 scope: 'identify',
             }).toString(),
             headers: {
@@ -185,28 +185,21 @@ app.io.attach(app.server)
 let sockets = {}
 let keypairs = {}
 app.io.on("connection", (socket) => {
-    socket.on('connectDriver', (uuid) => {
+    socket.on('linkDriver', (uuid) => {
         let query = "SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}'".format(uuid);
         console.log(query)
         conn.query(query, (err, result) => {
             if (err) throw err;
             if (result.length == 1) {
-                socket.emit("connectDriver", result[0].uid);
-                sockets[uuid] = socket;
+                socket.emit("linkDriver", result[0].uid);
             } else {
-                socket.emit("connectDriver", null);
+                socket.emit("linkDriver", null);
             }
         });
     })
 
-    socket.on('keypair', (uuid) => {
-        try {
-            let key = keypair(uuid);
-            keypairs[uuid] = key;
-            socket.emit("keypair", { publicKey: key.publicKey, privateKey: key.privateKey })
-        }catch (e) {
-            socket.emit("keypair", { error: e.toString() })
-        }
+    socket.on('connect', (uuid) => {
+        sockets[uuid] = socket;
     })
 });
 
