@@ -224,10 +224,30 @@ async function onMessage(message) {
                         let canvas = new JSDOM("<canvas></canvas>");
                         let dom = canvas.window.document;
                         let ctx = dom.querySelector("canvas").getContext("2d");
+                        // best quality
+                        ctx.canvas.width = 1200;
+                        ctx.canvas.height = 600;
                         let data = {
                             labels: range(1, cpuUsages.length),
                             datasets: [
+                                // {
+                                //     type: "line",
+                                //     label: "CPU",
+                                //     data: cpuUsages,
+                                //     borderColor: "blue",
+                                //     backgroundColor: "rgba(0, 0, 255, 0.2)",
+                                //     borderWidth: 1,
+                                // },
+                                // {
+                                //     type: "line",
+                                //     label: "Memory",
+                                //     data: memoryUsages,
+                                //     borderColor: "red",
+                                //     backgroundColor: "rgba(255, 0, 0, 0.2)",
+                                //     borderWidth: 1,
+                                // },
                                 {
+                                    type: "bar",
                                     label: "CPU",
                                     data: cpuUsages,
                                     borderColor: "blue",
@@ -236,6 +256,7 @@ async function onMessage(message) {
                                     fill: "origin"
                                 },
                                 {
+                                    type: "bar",
                                     label: "Memory",
                                     data: memoryUsages,
                                     borderColor: "red",
@@ -251,6 +272,9 @@ async function onMessage(message) {
                                 title: {
                                     display: true,
                                     text: 'CPU, Memory Usage (%)'
+                                },
+                                customCanvasBackgroundColor: {
+                                    color: 'white',
                                 }
                             },
                             scales: {
@@ -262,7 +286,6 @@ async function onMessage(message) {
                             }
                         };
                         new chartjs(ctx, {
-                            type: "line",
                             data: data,
                             options: options
                         })
