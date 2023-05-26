@@ -18,4 +18,4 @@ function getConn() {
     });
 }
 
-module.exports = getConn();
+module.exports = getConn;

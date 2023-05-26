@@ -1,0 +1,15 @@
+{
+
+    "compilerOptions": {
+        "allowJs": true,
+        "module": "CommonJS",
+        "target": "ES5",
+        "outDir": "./dist",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "lib": ["ES2015", "DOM", "DOM.Iterable"],
+    },
+    "include": ["./src/**/*", "src/**/*.json", "index.ts"],
+    "exclude": ["node_modules", "dist"]
+}

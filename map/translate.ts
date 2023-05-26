@@ -1,4 +1,4 @@
-module.exports = {
+export const translate = {
     // translate
     CreateInstantInvite: "즉석 초대 생성 권한",
     KickMembers: "멤버 추방 권한",

@@ -1,4 +1,4 @@
-module.exports = {
+export const descriptions = {
     message: {
         common: {
             characteristic: {
