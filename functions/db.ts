@@ -1,6 +1,7 @@
 // DB
-const mysql = require('mysql');
-const config = require('../config_GPT_Processor.json');
+import * as mysql from "mysql";
+import * as config from "../config_GPT_Processor.json";
+import {Connection, Pool, PoolConnection} from "mysql";
 
 const pool = mysql.createPool({
     host: config.DB.Host,
@@ -9,7 +10,7 @@ const pool = mysql.createPool({
     database: config.DB.Database
 });
 
-function getConn() {
+export function getConn(): Promise<PoolConnection> {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, conn) => {
             if (err) reject(err);
@@ -17,5 +18,3 @@ function getConn() {
         });
     });
 }
-
-module.exports = getConn;

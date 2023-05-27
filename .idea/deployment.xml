@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="lyj" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="lyj" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;*.hprof;*.pyc;node_modules;" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="lyj">
         <serverdata>
           <mappings>
-            <mapping deploy="/project/GPT_Processor" local="$PROJECT_DIR$" web="" />
+            <mapping deploy="/project/GPT_Processor" local="$PROJECT_DIR$/dist" web="" />
           </mappings>
         </serverdata>
       </paths>

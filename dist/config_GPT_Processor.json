@@ -1,0 +1,21 @@
+{
+    "OpenAI": {
+        "API_KEY": "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"
+    },
+    "KoreanBots": {
+        "Token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjExMDE1NDA0MTYwMzEwNDc4NDEiLCJpYXQiOjE2ODI3NjE5NzJ9.azRaQSRszkkw5MTkWYber21F3pjfP6tGHA3gpk05ymVJw0L9Wa1XRpys5zNLUyZefK8RMUcwkeXTLIOdNKj4tNjftCFd2TiVSLI407zP2SVfToTfQFN_ZIGKowoyp3r5DpssUUS-W0C1Luq4D_k6Vz0pK9cmHQSxubpZfd8Mx_E"
+    },
+    "Discord": {
+        "Id": "1101540416031047841",
+        "PublicKey": "3f9318b37db4b5aabb2f65d51cbd4bc24abb23911eca86be748d27f222411419",
+        "Secret": "4pUcbEoOZ_aCGPQ8Cgmgt6HXdg0SWs92",
+        "Token": "MTEwMTU0MDQxNjAzMTA0Nzg0MQ.GqSRHk.qrGU-xdKDFgR21Pr1tvFddYuXgMmg82jA9JT3I",
+        "Prefix": "야"
+    },
+    "DB": {
+        "Host": "lyj.kr",
+        "User": "discord_GPT_Processor",
+        "Password": "EBFFEB37480CE20A401613B146558878855E6ED99C7C468F914DD39D3B435E8A",
+        "Database": "discord"
+    }
+}

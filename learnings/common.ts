@@ -1,6 +1,12 @@
-export const common = (cmd, description) => {
-    return (prompt) => {
-        let frame =  [
+import {commands} from "./commands";
+import {descriptions} from "./descriptions";
+
+import * as types from "../map/types";
+
+
+export const common = (cmd: typeof commands, description: typeof descriptions) => {
+    return (prompt: string|types.conversations) => {
+        let frame: types.conversations =  [
             { role: "system", content: "Response as json string only." },
             { role: "system", content: "Analyze message's intention and returns learnings" },
             { role: "system", content: "Command: "+JSON.stringify(cmd) },

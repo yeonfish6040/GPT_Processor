@@ -1,4 +1,4 @@
-module.exports = (need, list) => {
+module.exports = (need: string, list: string) => {
     return [
         { role: "system", content: "Response as json string only." },
         { role: "system", content: "You need "+need },

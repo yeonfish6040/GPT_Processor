@@ -1,5 +1,5 @@
-const mysql = require('mysql');
-const config = require('../config_GPT_Processor.json');
+import * as mysql from "mysql";
+import * as config from "../config_GPT_Processor.json";
 
 const conn = mysql.createConnection({
     host: config.DB.Host,

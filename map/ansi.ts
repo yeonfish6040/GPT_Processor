@@ -1,7 +1,7 @@
-export const ansify = (str) => {
+export const ansify = (str: string) => {
     return "```ansi\n" + str + "\n```";
 }
-export const ansiCode = (color) => {
+export const ansiCode = (color: string) => {
     return {
         "red": "[00;31m",
         "green": "[00;32m",

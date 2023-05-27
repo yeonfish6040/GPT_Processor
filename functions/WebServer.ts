@@ -1,32 +1,39 @@
-// Socket io
-const SocketIO = require("socket.io")
+// types
+import {Request, Response} from "express";
+import * as interfaces from "../map/interfaces";
+import * as types from "../map/types";
+
 
 // file manager
-const path = require("path")
-const fs = require("fs")
+import * as path from "path";
+import * as fs from "fs";
+
+// Socket io
+import { Server } from "socket.io";
+import {Socket} from "socket.io";
 
 // Crypto
-const crypto = require("crypto")
+import * as crypto from "crypto";
 
 // request
-const { request } = require('undici');
+import { request, Dispatcher } from "undici";
 
 // DB
-const mysql = require('mysql');
-const config = require('../config_GPT_Processor.json');
+import * as mysql from "mysql";
+import * as config from "../config_GPT_Processor.json";
+import {MysqlError} from "mysql";
 
-const db = require("./db.ts");
+import {getConn as db} from "./db";
 
 // WebServer
-
-const https = require("https")
-const express = require("express")
-const bodyParser = require("body-parser")
-const ejs = require("ejs")
+import * as https from "https";
+import * as express from "express";
+import * as bodyParser from "body-parser";
+import * as ejs from "ejs";
 
 
 export let port = 18001
-export let app = express()
+let app = express.default();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -35,16 +42,16 @@ app.use("/img", express.static(path.join(__dirname, 'web/static/img')));
 app.use("/js", express.static(path.join(__dirname, 'web/static/js')));
 app.use("/css", express.static(path.join(__dirname, 'web/static/css')));
 
-app.get("", (req, res) => res.render("index"));
+app.get("", (req: Request, res: Response) => res.render("index"));
 
-app.get("/link/driver", async (req, res) => {
+app.get("/link/driver", async (req: Request, res: Response) => {
     if (req.query.code && req.query.state) {
-        const tokenResponseData = await request('https://discord.com/api/oauth2/token', {
+        const tokenResponseData: Dispatcher.ResponseData = await request('https://discord.com/api/oauth2/token', {
             method: 'POST',
             body: new URLSearchParams({
                 client_id: config.Discord.Id,
                 client_secret: config.Discord.Secret,
-                code: req.query.code,
+                code: req.query.code as string,
                 grant_type: 'authorization_code',
                 redirect_uri: `https://lyj.kr:18001/link/driver`,
                 scope: 'identify',
@@ -54,26 +61,26 @@ app.get("/link/driver", async (req, res) => {
             },
         });
         let oauthData = await tokenResponseData.body.json();
-        let userResult = await request('https://discord.com/api/users/@me', {
+        let response: Dispatcher.ResponseData = await request('https://discord.com/api/users/@me', {
             headers: {
                 authorization: `${oauthData.token_type} ${oauthData.access_token}`,
             },
         });
-        userResult = await userResult.body.json()
+        let userResult = await response.body.json()
         let conn = await db();
-        let query = format("SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}' OR `uid` = '{1}'", req.query.state, userResult.id);
-        conn.query(query, (err, result) => {
+        let query: string = format("SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}' OR `uid` = '{1}'", req.query.state, userResult.id);
+        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
             if (err) throw err;
             if (result.length == 1) conn.query(
                 format("UPDATE `GPT_Processor_Drivers` SET `driver` = '{0}', `uid` = '{1}' WHERE `uid` = '{2}'", req.query.state, userResult.id, userResult.id)
-                , (err, result) => {
+                , (err: MysqlError, result: interfaces.driver[]) => {
                     if (err) throw err;
                     res.writeHead(200, { 'Content-Type': 'text/html' }).end("재연동 성공");
                 }
             );
             else conn.query(
                 format("INSERT INTO `GPT_Processor_Drivers` (`driver`, `uid`) VALUES ('{0}', '{1}')", req.query.state, userResult.id),
-                (err, result) => {
+                (err: MysqlError, result: interfaces.driver[]) => {
                     if (err) throw err;
                     res.writeHead(200, { 'Content-Type': 'text/html' }).end("연동 성공");
                 }
@@ -85,7 +92,7 @@ app.get("/link/driver", async (req, res) => {
 
 });
 
-app.get("/img", async (req, res) => {
+app.get("/img", async (req: Request, res: Response) => {
     let files = fs.readdirSync(path.join(__dirname, "web/static/img/"));
     files.forEach((file) => {
         if (Date.now()-parseInt(file.split("_")[file.length-1]) > 1209600)
@@ -96,11 +103,11 @@ app.get("/img", async (req, res) => {
     res.writeHead(200, {'Content-Type': 'image/png'}).end(fs.readFileSync(path.join(__dirname, file)));
 });
 
-app.post("/check/driver", async (req, res) => {
+app.post("/check/driver", async (req: Request, res: Response) => {
     if (req.body.uuid) {
         let conn = await db();
         let query = format("SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'", req.body.uuid);
-        conn.query(query, (err, result) => {
+        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end(result.length == 1 ? "true" : "false")
         })
@@ -109,12 +116,12 @@ app.post("/check/driver", async (req, res) => {
         res.writeHead(422).end()
 })
 
-app.post("/check/token/openai", async (req, res) => {
+app.post("/check/token/openai", async (req: Request, res: Response) => {
     if (req.body.uuid) {
         let conn = await db();
         let query = format("SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'", req.body.uuid);
         console.log(query)
-        conn.query(query, (err, result) => {
+        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end(result[0].openai_token ? "true" : "false")
         })
@@ -123,12 +130,12 @@ app.post("/check/token/openai", async (req, res) => {
         res.writeHead(422).end()
 });
 
-app.post("/check/token/googleSearch", async (req, res) => {
+app.post("/check/token/googleSearch", async (req: Request, res: Response) => {
     if (req.body.uuid) {
         let conn = await db();
         let query = format("SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'", req.body.uuid);
         console.log(query)
-        conn.query(query, (err, result) => {
+        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end(result[0].googleSearch_token ? "true" : "false")
         })
@@ -138,11 +145,11 @@ app.post("/check/token/googleSearch", async (req, res) => {
 });
 
 
-app.post("/set/token/openai", async (req, res) => {
+app.post("/set/token/openai", async (req: Request, res: Response) => {
     if (req.body.token && req.body.uuid) {
         let conn = await db();
         let query = format("UPDATE GPT_Processor_Drivers SET openai_token = '{0}' WHERE `driver` = '{1}'", req.body.token, req.body.uuid);
-        conn.query(query, (err, result) => {
+        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end()
         })
@@ -151,11 +158,11 @@ app.post("/set/token/openai", async (req, res) => {
         res.writeHead(422).end()
 });
 
-app.post("/set/token/googleSearch", async (req, res) => {
+app.post("/set/token/googleSearch", async (req: Request, res: Response) => {
     if (req.body.token && req.body.uuid) {
         let conn = await db();
         let query = format("UPDATE GPT_Processor_Drivers SET googleSearch_token = '{0}' WHERE `driver` = '{1}'", req.body.token, req.body.uuid);
-        conn.query(query, (err, result) => {
+        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end()
         })
@@ -164,58 +171,24 @@ app.post("/set/token/googleSearch", async (req, res) => {
         res.writeHead(422).end()
 });
 
-app.post("/crypto/keypair", (req, res) => {
-    let key;
-    try {
-        key = keypair(req.body.passphrase)
-    }catch (e) {
-        res.status(500).json({ error: e.toString() })
-    }
-    res.status(200).json({ publicKey: key.publicKey, privateKey: key.privateKey })
-});
+export let application = {
+    server: https.createServer({
+        ca: fs.readFileSync(path.join(__dirname, "../cert/fullchain.pem")),
+        key: fs.readFileSync(path.join(__dirname, "../cert/privkey.pem")),
+        cert: fs.readFileSync(path.join(__dirname, "../cert/cert.pem"))
+    }, app),
+    io: new Server()
+}
 
-app.post("/crypto/encrypt", (req, res) => {
-    let encrypted
-    try {
-        encrypted = encrypt(req.body.publicKey, req.body.text)
-    }catch (e) {
-        res.status(500).json({ error: e.toString() })
-    }
+application.io.attach(application.server)
 
-    res.json({ encrypted: encrypted.toString("base64") })
-})
-app.post("/crypto/decrypt", (req, res) => {
-    let decrypted
-    try {
-        let key = crypto.createPrivateKey({
-            key: req.body.privateKey,
-            format: "pem",
-            passphrase: req.body.passphrase || "default"
-        });
-
-        decrypted = decrypt(key, req.body.text, req.body.passphrase)
-    }catch (e) {
-        res.status(500).json({ error: e.toString() })
-    }
-    res.json({ decrypted: decrypted.toString("utf-8") })
-})
-
-app.server = https.createServer({
-    ca: fs.readFileSync(path.join(__dirname, "../cert/fullchain.pem")),
-    key: fs.readFileSync(path.join(__dirname, "../cert/privkey.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "../cert/cert.pem"))
-}, app)
-
-app.io = SocketIO()
-app.io.attach(app.server)
-
-let sockets = {}
-app.io.on("connection", (socket) => {
+let sockets: types.sockets = {}
+application.io.on("connection", (socket: Socket) => {
     socket.on('linkDriver', async (uuid) => {
         let conn = await db();
         let query = format("SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}'", uuid);
         console.log(query)
-        conn.query(query, (err, result) => {
+        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
             if (err) throw err;
             if (result.length == 1) {
                 socket.emit("linkDriver", result[0].uid);
@@ -231,39 +204,9 @@ app.io.on("connection", (socket) => {
     })
 });
 
-const format = function (formatted: String, ...args: any[]) {
+const format = function (formatted: string, ...args: any[]): string {
     for( let arg in arguments ) {
         formatted = formatted.replace("{" + arg + "}", arguments[arg]);
     }
     return formatted;
 };
-
-export const keypair = (passphrase) => {
-    let key = crypto.generateKeyPairSync("rsa", {
-        modulusLength: 2048,
-        publicKeyEncoding: {
-            type: "pkcs1",
-            format: "pem"
-        },
-        privateKeyEncoding: {
-            type: "pkcs8", // Key Encoding 방식 type: 'sec1' | 'pkcs8';
-            format: "pem",
-            cipher: "aes-256-cbc", // 알고리즘
-            passphrase: passphrase || "default"
-        }
-    })
-}
-
-export const encrypt = (text, publicKey) => {
-    return crypto.publicEncrypt(publicKey, Buffer.from(text));
-}
-
-export const decrypt = (text, privateKey, passphrase=null) => {
-    let key = crypto.createPrivateKey({
-        key: privateKey,
-        format: "pem",
-        passphrase: passphrase || "default"
-    });
-
-    return crypto.privateDecrypt(key, Buffer.from(text, "base64"));
-}
