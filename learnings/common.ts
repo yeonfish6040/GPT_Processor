@@ -1,15 +1,21 @@
-module.exports = (cmd, description) => {
-    return (prompt) => {
-        let frame =  [
+import {commands} from "./commands";
+import {descriptions} from "./descriptions";
+
+import * as types from "../map/types";
+
+
+export const common = (cmd: typeof commands, description: typeof descriptions) => {
+    return (prompt: string|types.conversations) => {
+        let frame: types.conversations =  [
             { role: "system", content: "Response as json string only." },
-            { role: "system", content: "Analyze message's intention and returns command" },
+            { role: "system", content: "Analyze message's intention and returns learnings" },
             { role: "system", content: "Command: "+JSON.stringify(cmd) },
             { role: "system", content: "Command description: "+JSON.stringify(description) },
             { role: "system", content: "You can use multiple characteristics if user request contains multiple characteristics" },
-            { role: "system", content: "You cannot contain characteristics and command not in the command" },
-            { role: "system", content: "characteristics are on the lowest of the tree of command" },
+            { role: "system", content: "You cannot contain characteristics and learnings not in the learnings" },
+            { role: "system", content: "characteristics are on the lowest of the tree of learnings" },
             { role: "system", content: "Do not send code." },
-            { role: "system", content: "handle command to message.common if intent doesn't match other things" },
+            { role: "system", content: "handle learnings to message.common if intent doesn't match other things" },
             { role: "system", content: "Timer's return value is milliseconds. you should convert seconds, minutes, hours, or day into milliseconds" },
 
             // System
@@ -18,6 +24,20 @@ module.exports = (cmd, description) => {
             { role: "user", content: "Please reset the conversation" },
             { role: "assistant", content: "{ \"command\": \"system.reset\" }" },
             { role: "user", content: "Show me your information" },
+            { role: "assistant", content: "{ \"command\": \"system.info\"}" },
+            { role: "user", content: "Give me bot's information" },
+            { role: "assistant", content: "{ \"command\": \"system.info\"}" },
+            { role: "user", content: "Show me information" },
+            { role: "assistant", content: "{ \"command\": \"system.info\"}" },
+            { role: "user", content: "Information" },
+            { role: "assistant", content: "{ \"command\": \"system.info\"}" },
+            { role: "user", content: "Uptime" },
+            { role: "assistant", content: "{ \"command\": \"system.info\"}" },
+            { role: "user", content: "Server count" },
+            { role: "assistant", content: "{ \"command\": \"system.info\"}" },
+            { role: "user", content: "Server count" },
+            { role: "assistant", content: "{ \"command\": \"system.info\"}" },
+            { role: "user", content: "Ping" },
             { role: "assistant", content: "{ \"command\": \"system.info\"}" },
 
             // nothing

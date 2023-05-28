@@ -1,4 +1,6 @@
-module.exports = {
+import * as types from "./types";
+
+export const translate: types.translation = {
     // translate
     CreateInstantInvite: "즉석 초대 생성 권한",
     KickMembers: "멤버 추방 권한",
