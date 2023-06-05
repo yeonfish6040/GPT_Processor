@@ -1,11 +1,18 @@
 import * as os from "os";
 import * as fs from "fs";
 import * as path from "path";
+import * as worker_threads from "worker_threads";
 
 import * as types from "./map/types";
 
+import * as interfaces from "./map/interfaces";
+
 import { OpenAIApi, Configuration } from "openai";
 import {AxiosResponse} from "axios";
+
+import * as AGPT_constant from "./map/AGPT_constant";
+
+import db from "./functions/db";
 
 import { application as app, port } from "./functions/WebServer";
 import { ansify, ansiCode } from "./map/ansi";
@@ -44,6 +51,8 @@ const client = new Discord.Client({
 });
 
 import { Koreanbots } from "koreanbots";
+import {MysqlError, PoolConnection} from "mysql";
+import EmbedManager from "./functions/EmbedManager";
 let koreanbots: Koreanbots = new Koreanbots({
     api: {
         token: config.KoreanBots.Token
@@ -51,7 +60,7 @@ let koreanbots: Koreanbots = new Koreanbots({
     clientID: config.Discord.Id
 })
 let update = (servers: number) => koreanbots.mybot.update({servers, shards: client.shard?.count})
-    .then((res: UpdateResponse) => res.code === 304 ? console.log("Error while updating server count. code 304") : console.log("Server count updated.", JSON.stringify(res)))
+    .then((res: UpdateResponse) => res.code == 304 ? null : console.log("Server count updated.", JSON.stringify(res)))
     .catch(console.error)
 
 const configuration = new Configuration({
@@ -84,7 +93,7 @@ const runPrompt = async (messages: types.conversations): Promise<AxiosResponse> 
         openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: messages,
-            temperature: 0,
+            temperature: 1,
         }).then((res: AxiosResponse) => {
             resolve(res);
         }).catch((err) => {
@@ -103,7 +112,7 @@ const getIntent = (message: types.conversations): Promise<types.command> => {
             if (responseJSONString == null || responseJSONString.length === 0) {
                 if (response == null || response.length === 0) {
                     reject(503);
-                    console.log(res);
+                    console.error("OpenAI_no-response", res);
                 }else {
                     return resolve({ command: "message.common", characteristic: { text: response } });
                 }
@@ -113,12 +122,12 @@ const getIntent = (message: types.conversations): Promise<types.command> => {
                 responseJSON = JSON.parse(responseJSONString![0]);
             } catch (e) {
                 reject(500);
-                console.log(e);
+                console.error(e);
             }
             resolve(responseJSON);
         }).catch((e) => {
             reject(500);
-            console.log(e);
+            console.error(e);
         })
     });
 }
@@ -152,6 +161,13 @@ const range = (start: number, end: number): Array<number> => {
     return [start, ...range(start + 1, end)];
 }
 
+const format = function (formatted: string, ...args: string[]): string {
+    for(let arg in args) {
+        formatted = formatted.replace("{" + arg + "}", args[arg]);
+    }
+    return formatted;
+};
+
 let cpuUsages: number[] = [];
 let memoryUsages: number[] = [];
 const logUsage = () => {
@@ -159,14 +175,19 @@ const logUsage = () => {
         (acc, tv) => acc + tv, 0
     );
     let usage = process.cpuUsage();
-    let currentCPUUsage = (usage.user + usage.system);
+    let currentCPUUsage = (usage.user + usage.system) / 1000;
     cpuUsages.push(Number((currentCPUUsage / total * 100).toFixed(3)));
     const {rss, heapTotal, heapUsed} = process.memoryUsage()
     memoryUsages.push(Number((rss / os.totalmem() * 100).toFixed(3)));
-    if (cpuUsages.length > 1000)
+    if (cpuUsages.length > 10000)
         cpuUsages.shift();
-    if (memoryUsages.length > 1000)
+    if (memoryUsages.length > 10000)
         memoryUsages.shift();
+    let logFile: types.resourceUsageLog[]|null = JSON.parse(fs.readFileSync(path.join(__dirname, "/logs/resourceUsages.json")).toString());
+    if (logFile == null) logFile = JSON.parse("[]");
+    logFile = logFile as types.resourceUsageLog[];
+    logFile.push({ time: Date.now(), cpu: currentCPUUsage, memory: rss, cpuMax: total, memoryMax: os.totalmem(), cpuPercentage: cpuUsages[cpuUsages.length-1], memoryPercentage: memoryUsages[memoryUsages.length-1] });
+    fs.writeFileSync(path.join(__dirname, "/logs/resourceUsages.json"), JSON.stringify(logFile, null, 4));
 }
 
 // handlers
@@ -257,25 +278,7 @@ async function onMessage(message: Message): Promise<any> {
                                     borderColor: "red",
                                     backgroundColor: "rgba(255, 0, 0, 0.2)",
                                     borderWidth: 1,
-                                },
-                                // {
-                                //     type: "bar",
-                                //     label: "CPU",
-                                //     data: cpuUsages,
-                                //     borderColor: "blue",
-                                //     backgroundColor: "rgba(0, 0, 255, 0.2)",
-                                //     borderWidth: 1,
-                                //     fill: "origin"
-                                // },
-                                // {
-                                //     type: "bar",
-                                //     label: "Memory",
-                                //     data: memoryUsages,
-                                //     borderColor: "red",
-                                //     backgroundColor: "rgba(255, 0, 0, 0.2)",
-                                //     borderWidth: 1,
-                                //     fill: "origin"
-                                // }
+                                }
                             ]
                         };
                         let options = {
@@ -473,7 +476,7 @@ async function onMessage(message: Message): Promise<any> {
                             }
                         } catch (e) {
                             await gotError(message, errMsg.general("유저 역할을 수정하는 도중 오류가 발생하였습니다."))
-                            console.log(e)
+                            console.error(e)
                         }
                         break;
                     case "util.timer":
@@ -496,6 +499,105 @@ async function onMessage(message: Message): Promise<any> {
                             .setTimestamp();
                         await message.reply({embeds: [embedNotice]});
                         break;
+                    case "AGPT":
+                        let embed = new EmbedManager();
+                        embed.setTitle("AGPT")
+                            .setDescription("AGPT가 요청을 처리중입니다!")
+                            .addFields({ name: "상태", value: "정상-진행중", inline: true },
+                                { name: "단계", value: "준비중", inline: true }
+                            ).setColor(randomColor())
+                            .setTimestamp();
+                        let msg = await message.reply({embeds: [embed]});
+                        embed.setMessage(msg)
+                        let worker = new worker_threads.Worker(path.join(__dirname, "/functions/AGPT_core.js"));
+                        let room = app.io.sockets.adapter.rooms.get(message.author.id);
+                        console.log(room?room.size:false)
+                        worker.postMessage({ evt: AGPT_constant.parent.tStart, task: res.characteristic.task, uid: message.author.id, socket: room?room.size===1:false })
+                        worker.on("message", async (value) => {
+                            console.log(value)
+                            switch (value.evt) {
+                                case AGPT_constant.child.SDC:
+                                    embed
+                                        .changeField("단계", "드라이버 확인중")
+                                        .edit();
+                                    break;
+                                case AGPT_constant.child.error.DNC:
+                                    embed
+                                        .changeField("상태", "오류-드라이버가 연결되지 않았습니다.")
+                                        .setColor(0xFF0000)
+                                        .edit();
+                                    await worker.terminate();
+
+                                    break;
+                                case AGPT_constant.child.error.DNF:
+                                    embed
+                                        .changeField("상태", "오류-드라이버가 계정에 등록되지 않았습니다.")
+                                        .setColor(0xFF0000)
+                                        .edit();
+                                    await worker.terminate();
+                                    break;
+                                case AGPT_constant.child.CDR:
+                                    embed
+                                        .addDescription("드라이버 등록 여부 확인 완료")
+                                        .edit();
+                                    break;
+                                case AGPT_constant.child.CDC:
+                                    embed
+                                        .addDescription("드라이버 연결 확인 완료")
+                                        .edit();
+                                    break;
+                                case AGPT_constant.child.CPF:
+                                    embed
+                                        .changeField("단계", "프로세스 파일 확인중")
+                                        .edit();
+                                    break;
+                                case AGPT_constant.child.error.RPE:
+                                    embed
+                                        .changeField("상태", "오류-진행중인 프로세스가 있습니다.")
+                                        .edit();
+                                    await worker.terminate();
+                                    break;
+                                case AGPT_constant.child.SPP:
+                                    embed
+                                        .addDescription("진행중인 프로세스 없음.")
+                                        .changeField("단계", "프로세스 생성중")
+                                        .edit();
+                                    break;
+                                case AGPT_constant.child.WGG:
+                                    embed
+                                        .addDescription(`Goal-${value.index}: ` + value.goal)
+                                        .edit();
+                                    break;
+                                case AGPT_constant.child.SRP:
+                                    embed
+                                        .addDescription("프로세스 생성 완료")
+                                        .changeField("단계", "프로세스 실행중")
+                                        .edit();
+                                    break;
+                                case AGPT_constant.child.error.OAE:
+                                    embed
+                                        .addDescription("프로세스 생성 실패")
+                                        .addDescription("OpenAI API 오류발생")
+                                        .addDescription(value.error)
+                                        .changeField("상태", "오류-OpenAI API 오류")
+                                        .setColor(0xFF0000)
+                                        .edit();
+                                    await worker.terminate();
+                                    break;
+                                case AGPT_constant.child.PGU:
+                                    switch (value.step) {
+                                        case AGPT_constant.child.progress.goals:
+                                            console.log(value.data)
+
+                                            break;
+                                    }
+                                    break
+                                case AGPT_constant.child.log:
+                                    console.log(value.data)
+                                    break;
+                            }
+                        });
+                        break;
                 }
             }
             await controller(res as types.command);
@@ -507,7 +609,7 @@ async function onMessage(message: Message): Promise<any> {
 
 // Logger
 logUsage()
-setInterval(logUsage, 1000)
+setInterval(logUsage, 10000)
 
 
 // Web Server

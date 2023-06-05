@@ -35,6 +35,11 @@ export const commands = {
             characteristic: {
                 user: "..."
             }
+        },
+        AGPT: {
+            characteristic: {
+                task: "..."
+            }
         }
     }
 }

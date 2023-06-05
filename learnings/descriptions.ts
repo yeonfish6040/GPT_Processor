@@ -28,5 +28,8 @@ export const descriptions = {
         check_permission: {
             user: "Check permission of specific user"
         }
+    },
+    AGPT: {
+        task: "Which user wants"
     }
 }

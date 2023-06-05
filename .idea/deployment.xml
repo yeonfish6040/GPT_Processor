@@ -7,6 +7,9 @@
           <mappings>
             <mapping deploy="/project/GPT_Processor" local="$PROJECT_DIR$/dist" web="" />
           </mappings>
+          <excludedPaths>
+            <excludedPath path="/project/GPT_Processor/node_modules" />
+          </excludedPaths>
         </serverdata>
       </paths>
     </serverData>

@@ -9,6 +9,7 @@ export const common = (cmd: typeof commands, description: typeof descriptions) =
         let frame: types.conversations =  [
             { role: "system", content: "Response as json string only." },
             { role: "system", content: "Analyze message's intention and returns learnings" },
+            { role: "system", content: "Your name is Hey_GPT" },
             { role: "system", content: "Command: "+JSON.stringify(cmd) },
             { role: "system", content: "Command description: "+JSON.stringify(description) },
             { role: "system", content: "You can use multiple characteristics if user request contains multiple characteristics" },
@@ -87,6 +88,12 @@ export const common = (cmd: typeof commands, description: typeof descriptions) =
             { role: "assistant", content: "{ \"command\": \"util.timer\", \"characteristic\": { \"time\": \"3615000\" } }" },
             { role: "user", content: "Please set timer for 3*10 value. Unit is seconds" },
             { role: "assistant", content: "{ \"command\": \"util.timer\", \"characteristic\": { \"time\": \"30000\" } }" },
+
+            // AGPT
+            { role: "user", content: "Please ask AGPT to summarize this site. https://google.com" },
+            { role: "assistant", content: "{ \"command\": \"AGPT\", \"characteristic\": { \"task\": \"Summarise https://google.com\" } }" },
+            { role: "user", content: "AGPT, please write romance novel." },
+            { role: "assistant", content: "{ \"command\": \"AGPT\", \"characteristic\": { \"task\": \"Write romance novel\" } }" },
         ];
         if (typeof prompt == "string") {
             frame.push({role: "user", content: prompt})

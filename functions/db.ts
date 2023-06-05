@@ -10,7 +10,7 @@ const pool = mysql.createPool({
     database: config.DB.Database
 });
 
-export function getConn(): Promise<PoolConnection> {
+export default function getConn(): Promise<PoolConnection> {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, conn) => {
             if (err) reject(err);

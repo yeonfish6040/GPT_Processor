@@ -12,18 +12,13 @@ import * as fs from "fs";
 import { Server } from "socket.io";
 import {Socket} from "socket.io";
 
-// Crypto
-import * as crypto from "crypto";
-
 // request
 import { request, Dispatcher } from "undici";
 
 // DB
-import * as mysql from "mysql";
 import * as config from "../config_GPT_Processor.json";
 import {MysqlError} from "mysql";
-
-import {getConn as db} from "./db";
+import db from "./db";
 
 // WebServer
 import * as https from "https";
@@ -68,19 +63,19 @@ app.get("/link/driver", async (req: Request, res: Response) => {
         });
         let userResult = await response.body.json()
         let conn = await db();
-        let query: string = format("SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}' OR `uid` = '{1}'", req.query.state, userResult.id);
-        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
+        let query: string = format("SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}' OR `uid` = '{1}'", req.query.state as string, userResult.id);
+        conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) throw err;
             if (result.length == 1) conn.query(
-                format("UPDATE `GPT_Processor_Drivers` SET `driver` = '{0}', `uid` = '{1}' WHERE `uid` = '{2}'", req.query.state, userResult.id, userResult.id)
-                , (err: MysqlError, result: interfaces.driver[]) => {
+                format("UPDATE `GPT_Processor_Drivers` SET `driver` = '{0}', `uid` = '{1}' WHERE `uid` = '{2}'", req.query.state as string, userResult.id, userResult.id)
+                , (err: MysqlError|null, result: interfaces.driver[]) => {
                     if (err) throw err;
                     res.writeHead(200, { 'Content-Type': 'text/html' }).end("재연동 성공");
                 }
             );
             else conn.query(
-                format("INSERT INTO `GPT_Processor_Drivers` (`driver`, `uid`) VALUES ('{0}', '{1}')", req.query.state, userResult.id),
-                (err: MysqlError, result: interfaces.driver[]) => {
+                format("INSERT INTO `GPT_Processor_Drivers` (`driver`, `uid`) VALUES ('{0}', '{1}')", req.query.state as string, userResult.id),
+                (err: MysqlError|null, result: interfaces.driver[]) => {
                     if (err) throw err;
                     res.writeHead(200, { 'Content-Type': 'text/html' }).end("연동 성공");
                 }
@@ -107,7 +102,7 @@ app.post("/check/driver", async (req: Request, res: Response) => {
     if (req.body.uuid) {
         let conn = await db();
         let query = format("SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'", req.body.uuid);
-        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
+        conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end(result.length == 1 ? "true" : "false")
         })
@@ -121,7 +116,7 @@ app.post("/check/token/openai", async (req: Request, res: Response) => {
         let conn = await db();
         let query = format("SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'", req.body.uuid);
         console.log(query)
-        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
+        conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end(result[0].openai_token ? "true" : "false")
         })
@@ -135,7 +130,7 @@ app.post("/check/token/googleSearch", async (req: Request, res: Response) => {
         let conn = await db();
         let query = format("SELECT * FROM `GPT_Processor_Drivers` where `driver` = '{0}'", req.body.uuid);
         console.log(query)
-        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
+        conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end(result[0].googleSearch_token ? "true" : "false")
         })
@@ -149,7 +144,7 @@ app.post("/set/token/openai", async (req: Request, res: Response) => {
     if (req.body.token && req.body.uuid) {
         let conn = await db();
         let query = format("UPDATE GPT_Processor_Drivers SET openai_token = '{0}' WHERE `driver` = '{1}'", req.body.token, req.body.uuid);
-        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
+        conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end()
         })
@@ -162,7 +157,7 @@ app.post("/set/token/googleSearch", async (req: Request, res: Response) => {
     if (req.body.token && req.body.uuid) {
         let conn = await db();
         let query = format("UPDATE GPT_Processor_Drivers SET googleSearch_token = '{0}' WHERE `driver` = '{1}'", req.body.token, req.body.uuid);
-        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
+        conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) res.writeHead(500).end()
             else res.writeHead(200).end()
         })
@@ -188,25 +183,22 @@ application.io.on("connection", (socket: Socket) => {
         let conn = await db();
         let query = format("SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}'", uuid);
         console.log(query)
-        conn.query(query, (err: MysqlError, result: interfaces.driver[]) => {
+        conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) throw err;
             if (result.length == 1) {
                 socket.emit("linkDriver", result[0].uid);
+                socket.join(result[0].uid);
             } else {
                 socket.emit("linkDriver", null);
             }
         });
         conn.release();
-    })
-
-    socket.on('connect', (uuid) => {
-        sockets[uuid] = socket;
-    })
+    });
 });
 
-const format = function (formatted: string, ...args: any[]): string {
-    for( let arg in arguments ) {
-        formatted = formatted.replace("{" + arg + "}", arguments[arg]);
+const format = function (formatted: string, ...args: string[]): string {
+    for(let arg in args) {
+        formatted = formatted.replace("{" + arg + "}", args[arg]);
     }
     return formatted;
 };
