@@ -6,13 +6,15 @@ export default class EmbedManager extends EmbedBuilder{
     description: string | null = null;
     fields: {name: string, value: string, inline?: boolean}[][] | null = null;
 
-    setTitle(title: string): this {
+    setTitle(title: string) {
         this.title = title;
-        return super.setTitle(title);
+        super.setTitle(title);
+        return this;
     }
-    setDescription(description: string): this {
+    setDescription(description: string) {
         this.description = description;
-        return super.setDescription(description);
+        super.setDescription(description);
+        return this;
     }
 
     addTitle(title: string|undefined) {
