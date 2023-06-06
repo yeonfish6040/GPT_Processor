@@ -2,6 +2,7 @@ import * as os from "os";
 import * as fs from "fs";
 import * as path from "path";
 import * as worker_threads from "worker_threads";
+import type {Worker} from "worker_threads";
 
 import * as types from "./map/types";
 
@@ -190,6 +191,14 @@ const logUsage = () => {
     fs.writeFileSync(path.join(__dirname, "/logs/resourceUsages.json"), JSON.stringify(logFile, null, 4));
 }
 
+const killThread = async (worker: Worker, message: Message) => {
+    let process = path.join(__dirname, "/functions/AGPT_processes/" + message.author.id + ".json");
+    if (fs.existsSync(process)) {
+        fs.unlinkSync(process);
+    }
+    worker.terminate();
+}
+
 // handlers
 
 /**
@@ -210,6 +219,7 @@ async function onMessage(message: Message): Promise<any> {
 
     if (message.author.bot) return;
     if (message.channel.type) return;
+    if (message.content.trim() == "야") return;
 
 
 
@@ -509,10 +519,16 @@ async function onMessage(message: Message): Promise<any> {
                             .setTimestamp();
                         let msg = await message.reply({embeds: [embed]});
                         embed.setMessage(msg)
+
                         let worker = new worker_threads.Worker(path.join(__dirname, "/functions/AGPT_core.js"));
                         let room = app.io.sockets.adapter.rooms.get(message.author.id);
-                        console.log(room?room.size:false)
-                        worker.postMessage({ evt: AGPT_constant.parent.tStart, task: res.characteristic.task, uid: message.author.id, socket: room?room.size===1:false })
+
+                        let NRPC = false
+                        let r_process = path.join(__dirname, "/functions/AGPT_processes/"+message.author.id+".json")
+                        if (fs.existsSync(r_process) && fs.readFileSync(r_process).toString() !== "")
+                                NRPC = true
+
+                        worker.postMessage({ evt: AGPT_constant.parent.tStart, task: res.characteristic.task, uid: message.author.id, socket: room?room.size===1:false, NRPC: NRPC });
                         worker.on("message", async (value) => {
                             console.log(value)
                             switch (value.evt) {
@@ -523,18 +539,19 @@ async function onMessage(message: Message): Promise<any> {
                                     break;
                                 case AGPT_constant.child.error.DNC:
                                     embed
+                                        .addDescription("드라이버가 설치되어있는 컴퓨터가 켜져있는지 확인하여 주십시오.")
                                         .changeField("상태", "오류-드라이버가 연결되지 않았습니다.")
                                         .setColor(0xFF0000)
                                         .edit();
-                                    await worker.terminate();
-
+                                    killThread(worker, message)
                                     break;
                                 case AGPT_constant.child.error.DNF:
                                     embed
+                                        .addDescription("드라이버를 설치하거나 드라이버 초기 설정을 완료 후, 다시 시도하여 주십시오.")
                                         .changeField("상태", "오류-드라이버가 계정에 등록되지 않았습니다.")
                                         .setColor(0xFF0000)
                                         .edit();
-                                    await worker.terminate();
+                                    killThread(worker, message)
                                     break;
                                 case AGPT_constant.child.CDR:
                                     embed
@@ -555,13 +572,15 @@ async function onMessage(message: Message): Promise<any> {
                                     embed
                                         .changeField("상태", "오류-진행중인 프로세스가 있습니다.")
                                         .edit();
-                                    await worker.terminate();
+                                    killThread(worker, message)
                                     break;
                                 case AGPT_constant.child.SPP:
                                     embed
                                         .addDescription("진행중인 프로세스 없음.")
                                         .changeField("단계", "프로세스 생성중")
                                         .edit();
+                                    let process = path.join(__dirname, `/functions/AGPT_processes/${message.author.id}.json`);
+                                    fs.createWriteStream(process).end();
                                     break;
                                 case AGPT_constant.child.WGG:
                                     embed
@@ -573,6 +592,7 @@ async function onMessage(message: Message): Promise<any> {
                                         .addDescription("프로세스 생성 완료")
                                         .changeField("단계", "프로세스 실행중")
                                         .edit();
+                                    killThread(worker, message)
                                     break;
                                 case AGPT_constant.child.error.OAE:
                                     embed
@@ -582,7 +602,7 @@ async function onMessage(message: Message): Promise<any> {
                                         .changeField("상태", "오류-OpenAI API 오류")
                                         .setColor(0xFF0000)
                                         .edit();
-                                    await worker.terminate();
+                                    killThread(worker, message)
                                     break;
                                 case AGPT_constant.child.PGU:
                                     switch (value.step) {

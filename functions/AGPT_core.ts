@@ -48,26 +48,11 @@ if (!isMainThread && parentPort) {
 
                 // Start process file checking =============================
                 parentPort!.postMessage({ evt: constant.child.CPF });
-
-                let uid = value.uid;
-                const process =  path.join(__dirname, "/AGPT_processes/" + uid + ".json")
-                if (fs.existsSync(process)) {
-                    if (fs.readFileSync(process).toString() === "[]" && parentPort) {
-                        return parentPort.postMessage({
-                            evt: constant.child.error.RPE,
-                            data: JSON.parse(fs.readFileSync("./AGPT_processes/" + uid + ".json").toString())[0]
-                        });
-                    }else {
-                        fs.createWriteStream(process).end();
-                        fs.writeFileSync(process, JSON.stringify("[]"));
-                        let conn = await db();
-                        toMain(conn, value);
-                    }
-                }else {
-                    fs.closeSync(fs.openSync(process, "w"));
-                    fs.writeFileSync(process, JSON.stringify("[]"));
+                if (value.NRPC) {
                     let conn = await db();
-                    toMain(conn, value);
+                    toMain(conn, value)
+                }else {
+                    parentPort!.postMessage({ evt: constant.child.error.RPE });
                 }
             });
         }
@@ -91,14 +76,12 @@ async function main(value: {evt: string, task: string, uid: string, openai?: Ope
         runPrompt(conversations, value.openai)
             .then((res: AxiosResponse) => {
                 conversations.push(res.data.choices[0].messages);
-                fs.writeFileSync(process, JSON.stringify(conversations));
-                let jsonReg = /{\s*"command"\s*:\s*"[^"]*"\s*(,\s*"characteristic"\s*:\s*{\s*[^{}]*\s*}\s*)?}/g
+                fs.writeFileSync(process, JSON.stringify(conversations, null, 2));
                 let text = res.data.choices[0].message.content;
-                let json = text.match(jsonReg);
-                let content = JSON.parse(json![0]);
-                parentPort!.postMessage({ evt: constant.child.log, data: content });
+                parentPort!.postMessage({ evt: constant.child.log, data: text });
+                let content = JSON.parse(text);
                 content.goals.forEach((goal: string, i: number) => {
-                    parentPort!.postMessage({ evt: constant.child.WGG, goal: goal, index: i })
+                    parentPort!.postMessage({ evt: constant.child.WGG, goal: goal, index: i+1 })
                 });
                 parentPort!.postMessage({ evt: constant.child.SRP });
             }).catch((e: AxiosError) => {

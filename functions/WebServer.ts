@@ -181,7 +181,7 @@ let sockets: types.sockets = {}
 application.io.on("connection", (socket: Socket) => {
     socket.on('linkDriver', async (uuid) => {
         let conn = await db();
-        let query = format("SELECT * FROM GPT_Processor_Drivers WHERE `driver` = '{0}'", uuid);
+        let query = format("SELECT * FROM `GPT_Processor_Drivers` WHERE `driver` = '{0}'", uuid);
         console.log(query)
         conn.query(query, (err: MysqlError|null, result: interfaces.driver[]) => {
             if (err) throw err;
