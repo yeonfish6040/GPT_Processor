@@ -103,10 +103,10 @@ const runPrompt = async (messages: types.conversations): Promise<AxiosResponse> 
     })
 }
 
-const getIntent = (message: types.conversations): Promise<types.command> => {
+const getIntent = (message: types.conversations): Promise<Array<types.command>> => {
     return new Promise((resolve, reject) => {
         runPrompt(req(message)).then((res: AxiosResponse) => {
-            let jsonReg = /{\s*"command"\s*:\s*"[^"]*"\s*(,\s*"characteristic"\s*:\s*{\s*[^{}]*\s*}\s*)?}/g
+            let jsonReg = /\[({\s*"command"\s*:\s*"[^"]*"\s*(,\s*"characteristic"\s*:\s*{\s*[^{}]*\s*}\s*)?}[ ]*[,]?[ ]*)+\]/g
             let response = res.data.choices[0].message.content
             console.log(response)
             let responseJSONString = jsonReg.exec(response);
@@ -115,7 +115,7 @@ const getIntent = (message: types.conversations): Promise<types.command> => {
                     reject(503);
                     console.error("OpenAI_no-response", res);
                 }else {
-                    return resolve({ command: "message.common", characteristic: { text: response } });
+                    return resolve([{ command: "message.common", characteristic: { text: response } }]);
                 }
             }
             let responseJSON;
@@ -158,8 +158,10 @@ const randomColor = (): HexColorString => {
 }
 
 const range = (start: number, end: number): Array<number> => {
-    if (start === end) return [start];
-    return [start, ...range(start + 1, end)];
+    let arr: Array<number> = [];
+    for (let i:number=start;i<=end;i++)
+        arr.push(i);
+    return arr;
 }
 
 const format = function (formatted: string, ...args: string[]): string {
@@ -228,7 +230,7 @@ async function onMessage(message: Message): Promise<any> {
         return message.reply("완료했습니다!");
     }
 
-    if (message.content.startsWith(config.Discord.Prefix)) {
+    if (message.content.startsWith(config.Discord.Prefix+" ")) {
         let bot_permission = message.guild!.members.cache.find((member) => member.user.id === config.Discord.Id)!.roles.highest.permissions;
         try {
             const userMsg = message.content.slice(config.Discord.Prefix.length).trim();
@@ -238,7 +240,7 @@ async function onMessage(message: Message): Promise<any> {
                 conversation[message.author.id] = {messages: [], lastTime: Date.now()};
             conversation[message.author.id].lastTime = Date.now();
             conversation[message.author.id]["messages"].push({role: "user", content: userMsg});
-            let res: types.command|undefined;
+            let res: Array<types.command>|undefined;
             try {
                 res = await getIntent(conversation[message.author.id]["messages"]);
                 await message.react("✅");
@@ -370,25 +372,25 @@ async function onMessage(message: Message): Promise<any> {
                                         messageList = messageList.filter((msg) => msg.author.id === res.characteristic.user.replace("<@", "").replace(">", ""));
                                     else
                                         messageList = messageList.filter((msg) => msg.author.username === res.characteristic.user);
-                                    await bulkDelete(message, messageList);
+                                    return await bulkDelete(message, messageList);
                                 } else if (res.characteristic.hasOwnProperty("content")) {
                                     messageList = messageList.filter((msg) => msg.content.includes(res.characteristic.content));
-                                    await bulkDelete(message, messageList);
+                                    return await bulkDelete(message, messageList);
                                 } else if (res.characteristic.hasOwnProperty("role")) {
                                     messageList = messageList.filter((msg) => msg.member!.roles.cache.has(res.characteristic.role.replace("<@&", "").replace(">", "")));
-                                    await bulkDelete(message, messageList);
+                                    return await bulkDelete(message, messageList);
                                 } else {
-                                    await bulkDelete(message, Number(res.characteristic.count));
+                                    return await bulkDelete(message, Number(res.characteristic.count));
                                 }
                             } else if (res.characteristic.hasOwnProperty("user")) {
                                 messageList = messageList.filter((msg) => msg.author.id === res.characteristic.user.replace("<@", "").replace(">", ""));
-                                await bulkDelete(message, messageList);
+                                return await bulkDelete(message, messageList);
                             } else if (res.characteristic.hasOwnProperty("content")) {
                                 messageList = messageList.filter((msg) => msg.content.includes(res.characteristic.content));
-                                await bulkDelete(message, messageList);
+                                return await bulkDelete(message, messageList);
                             } else if (res.characteristic.hasOwnProperty("role")) {
                                 messageList = messageList.filter((msg) => msg.member!.roles.cache.has(res.characteristic.role.replace("<@&", "").replace(">", "")));
-                                await bulkDelete(message, messageList);
+                                return await bulkDelete(message, messageList);
                             }
                         } catch (e) {
                             console.error(e)
@@ -523,10 +525,10 @@ async function onMessage(message: Message): Promise<any> {
                         let worker = new worker_threads.Worker(path.join(__dirname, "/functions/AGPT_core.js"));
                         let room = app.io.sockets.adapter.rooms.get(message.author.id);
 
-                        let NRPC = false
+                        let NRPC = true
                         let r_process = path.join(__dirname, "/functions/AGPT_processes/"+message.author.id+".json")
                         if (fs.existsSync(r_process) && fs.readFileSync(r_process).toString() !== "")
-                                NRPC = true
+                                NRPC = false
 
                         worker.postMessage({ evt: AGPT_constant.parent.tStart, task: res.characteristic.task, uid: message.author.id, socket: room?room.size===1:false, NRPC: NRPC });
                         worker.on("message", async (value) => {
@@ -539,6 +541,7 @@ async function onMessage(message: Message): Promise<any> {
                                     break;
                                 case AGPT_constant.child.error.DNC:
                                     embed
+                                        .addDescription("드라이버가 소켓서버에 연결되어있지 않음.")
                                         .addDescription("드라이버가 설치되어있는 컴퓨터가 켜져있는지 확인하여 주십시오.")
                                         .changeField("상태", "오류-드라이버가 연결되지 않았습니다.")
                                         .setColor(0xFF0000)
@@ -547,7 +550,8 @@ async function onMessage(message: Message): Promise<any> {
                                     break;
                                 case AGPT_constant.child.error.DNF:
                                     embed
-                                        .addDescription("드라이버를 설치하거나 드라이버 초기 설정을 완료 후, 다시 시도하여 주십시오.")
+                                        .addDescription("드라이버 등록 정보를 찾을 수 없음.")
+                                        .addDescription("Help: 드라이버를 설치하거나 드라이버 초기 설정을 완료 후, 다시 시도하여 주십시오.")
                                         .changeField("상태", "오류-드라이버가 계정에 등록되지 않았습니다.")
                                         .setColor(0xFF0000)
                                         .edit();
@@ -620,7 +624,9 @@ async function onMessage(message: Message): Promise<any> {
                         break;
                 }
             }
-            await controller(res as types.command);
+            Array.prototype.forEach.call(res, async (cmd: types.command) => {
+                await controller(cmd).then(() => {})
+            })
         } catch (e) {
             console.error(e)
         }

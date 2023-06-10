@@ -43,7 +43,8 @@ export default class EmbedManager extends EmbedBuilder{
                 if (this.fields![x][y].name === name) {
                     this.fields![x][y].name = new_name?new_name:name;
                     this.fields![x][y].value = value;
-                    this.fields![x][y].inline = !!inline;
+                    if (inline !== undefined)
+                        this.fields![x][y].inline = !!inline;
                 }
             });
         });

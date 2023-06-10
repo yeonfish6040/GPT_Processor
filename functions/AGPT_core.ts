@@ -13,10 +13,7 @@ import db from "./db";
 
 import {AxiosError, AxiosResponse} from "axios";
 import {MysqlError, PoolConnection} from "mysql";
-import path from "path";
-import {Message} from "discord.js";
-import EmbedManager from "./EmbedManager";
-import {parent} from "../map/AGPT_constant";
+import * as path from "path";
 
 if (!isMainThread && parentPort) {
     parentPort.on("message", async (value) => {
@@ -78,8 +75,9 @@ async function main(value: {evt: string, task: string, uid: string, openai?: Ope
                 conversations.push(res.data.choices[0].messages);
                 fs.writeFileSync(process, JSON.stringify(conversations, null, 2));
                 let text = res.data.choices[0].message.content;
-                parentPort!.postMessage({ evt: constant.child.log, data: text });
-                let content = JSON.parse(text);
+                let regex = /^\s*({[\s\S]*}|[\[\]\d.\-+eE]+|".*"|null|true|false)\s*$/;
+                let jsonString = text.match(regex)[0];
+                let content = JSON.parse(jsonString);
                 content.goals.forEach((goal: string, i: number) => {
                     parentPort!.postMessage({ evt: constant.child.WGG, goal: goal, index: i+1 })
                 });
