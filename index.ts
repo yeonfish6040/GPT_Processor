@@ -69,8 +69,8 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const chartjs = require("chart.js");
-const {JSDOM} = require("jsdom");
+import * as chartjs from "chart.js";
+import { JSDOM } from "jsdom";
 
 let uptime: number;
 client.on(Events.ClientReady, () => {
@@ -268,11 +268,11 @@ async function onMessage(message: Message): Promise<any> {
 
                         let canvas = new JSDOM("<canvas></canvas>");
                         let dom = canvas.window.document;
-                        let ctx = dom.querySelector("canvas").getContext("2d");
+                        let ctx = dom.querySelector("canvas")!.getContext("2d")!;
                         // best quality
                         ctx.canvas.width = 1200;
                         ctx.canvas.height = 600;
-                        let data = {
+                        let data: chartjs.ChartData = {
                             labels: range(1, cpuUsages.length),
                             datasets: [
                                 {
@@ -312,11 +312,12 @@ async function onMessage(message: Message): Promise<any> {
                                 }
                             }
                         };
-                        new chartjs(ctx, {
+                        new chartjs.Chart(ctx, {
+                            type: "line",
                             data: data,
                             options: options
                         })
-                        let img = dom.querySelector("canvas").toDataURL().replace(/^data:image\/png;base64,/, "");
+                        let img = dom.querySelector("canvas")!.toDataURL().replace(/^data:image\/png;base64,/, "");
                         let filename = `chart_usage_${Date.now()}.png`;
                         fs.writeFileSync(path.join(__dirname, `functions/web/static/img/${filename}`), img, "base64");
                         let info = new EmbedBuilder()
