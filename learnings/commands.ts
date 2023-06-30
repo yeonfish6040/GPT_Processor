@@ -25,10 +25,10 @@ export const commands = {
                 unban: "..."
             }
         },
-        mute: {
+        timeout: {
             characteristic: {
                 user: "...",
-                isMute: "..."
+                time: "..."
             }
         },
         check_permission: {
@@ -36,10 +36,10 @@ export const commands = {
                 user: "..."
             }
         },
-        AGPT: {
-            characteristic: {
-                task: "..."
-            }
-        }
+        // AGPT: {
+        //     characteristic: {
+        //         task: "..."
+        //     }
+        // }
     }
 }

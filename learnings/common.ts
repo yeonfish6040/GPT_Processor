@@ -2,21 +2,26 @@ import {commands} from "./commands";
 import {descriptions} from "./descriptions";
 
 import * as types from "../map/types";
+import {Message} from "discord.js";
 
 
 export const common = (cmd: typeof commands, description: typeof descriptions) => {
-    return (prompt: string|types.conversations) => {
+    return (msg: Message, prompt: string|types.conversations) => {
         let frame: types.conversations =  [
             { role: "system", content: "You must provide only the output in the json format with no explanation or conversation." },
             { role: "system", content: "Analyze message's intention and returns learnings" },
-            { role: "system", content: "Your name is Hey_GPT" },
+            { role: "system", content: "Your name is Hey_GPT. And user's name is "+msg.author.username+". This names are not allowed to be put in user field of characteristic." },
             { role: "system", content: "Command: "+JSON.stringify(cmd) },
             { role: "system", content: "Command description: "+JSON.stringify(description) },
+            { role: "system", content: "You cannot use undeclared command." },
             { role: "system", content: "You can use multiple characteristics if user request contains multiple characteristics" },
             { role: "system", content: "Characteristics are on the lowest tree" },
             { role: "system", content: "Handle learnings to message.common if intent doesn't match other things" },
             { role: "system", content: "Timer's return value is milliseconds. you should convert seconds, minutes, hours, or day into milliseconds. default time unit is second. Ex) user: Set timer for 5 | assistant: 5000" },
             { role: "system", content: "You can provide multiple actions. like [<command>, <command>]" },
+            { role: "system", content: "User id is "+msg.author.id+". You should return this id on user section of characteristic if user wants result about user. And your id is 1101540416031047841. If the user wants your name, return Hey_GPT and if user wants result about you, return this id 1101540416031047841. This is your id this id is used for user section of characteristic. You should use your id when user wants result about you." },
+            { role: "system", content: "In user field of characteristic, you should always put id. Not a name. Name like 'Hey_GPT' is not allowed to pu in user field like 'hey_gpt'. The number covered with <@ and > is id. " },
+            { role: "system", content: "ex) [{ \"command\": \"user.check_permission\", \"characteristic\": { \"user\": \"Hey_GPT\" } }] <- Not allowed, [{ \"command\": \"user.check_permission\", \"characteristic\": { \"user\": \"1101540416031047841\" } }] <- Allowed" },
 
             // System
             { role: "user", content: "Please delete the conversation." },
@@ -93,16 +98,16 @@ export const common = (cmd: typeof commands, description: typeof descriptions) =
             { role: "assistant", content: "[{ \"command\": \"user.check_permission\", \"characteristic\": { \"user\": \"yeonfish\" } }, { \"command\": \"message.delete\", \"characteristic\": { \"count\": \"5\" } }]" },
 
             // AGPT
-            { role: "user", content: "Please ask AGPT to summarize this site. https://google.com" },
-            { role: "assistant", content: "[{ \"command\": \"AGPT\", \"characteristic\": { \"task\": \"Summarise https://google.com\" } }]" },
-            { role: "user", content: "AGPT, please write romance novel." },
-            { role: "assistant", content: "[{ \"command\": \"AGPT\", \"characteristic\": { \"task\": \"Write romance novel\" } }]" },
+            // { role: "user", content: "Please ask AGPT to summarize this site. https://google.com" },
+            // { role: "assistant", content: "[{ \"command\": \"AGPT\", \"characteristic\": { \"task\": \"Summarise https://google.com\" } }]" },
+            // { role: "user", content: "AGPT, please write romance novel." },
+            // { role: "assistant", content: "[{ \"command\": \"AGPT\", \"characteristic\": { \"task\": \"Write romance novel\" } }]" },
         ];
-        if (typeof prompt == "string") {{}
+        if (typeof prompt == "string") {
             frame.push({role: "user", content: prompt})
             return frame;
         }else {
             return frame.concat(prompt)
-        }
+        }4
     }
 }

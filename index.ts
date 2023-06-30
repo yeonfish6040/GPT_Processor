@@ -36,8 +36,7 @@ import {
     Guild,
     MessageManager,
     Message,
-    Awaitable, TextChannel, ColorResolvable, HexColorString, Collection, User, Role, GuildMember
-} from "discord.js";
+    Awaitable, TextChannel, ColorResolvable, HexColorString, Collection, User, Role, GuildMember} from "discord.js";
 const client = new Discord.Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -103,9 +102,9 @@ const runPrompt = async (messages: types.conversations): Promise<AxiosResponse> 
     })
 }
 
-const getIntent = (message: types.conversations): Promise<Array<types.command>> => {
+const getIntent = (msg: Message, message: types.conversations): Promise<Array<types.command>> => {
     return new Promise((resolve, reject) => {
-        runPrompt(req(message)).then((res: AxiosResponse) => {
+        runPrompt(req(msg, message)).then((res: AxiosResponse) => {
             let jsonReg = /\[({\s*"command"\s*:\s*"[^"]*"\s*(,\s*"characteristic"\s*:\s*{\s*[^{}]*\s*}\s*)?}[ ]*[,]?[ ]*)+\]/g
             let response = res.data.choices[0].message.content
             console.log(response)
@@ -148,9 +147,7 @@ const bulkDelete = (message: Message, messageList: Collection<string, Message<bo
 }
 
 const gotError = async (message: Message, msg: string) => {
-    await message.reactions.resolve("✅")!.users.remove(config.Discord.Id)
-    await message.react("❌");
-    await message.reply(msg).then((msg) => setTimeout(() => msg.delete(), 2000));
+    await message.channel.send(msg).then((msg) => setTimeout(() => msg.delete(), 5000));
 }
 
 const randomColor = (): HexColorString => {
@@ -186,11 +183,6 @@ const logUsage = () => {
         cpuUsages.shift();
     if (memoryUsages.length > 10000)
         memoryUsages.shift();
-    let logFile: types.resourceUsageLog[]|null = JSON.parse(fs.readFileSync(path.join(__dirname, "/logs/resourceUsages.json")).toString());
-    if (logFile == null) logFile = JSON.parse("[]");
-    logFile = logFile as types.resourceUsageLog[];
-    logFile.push({ time: Date.now(), cpu: currentCPUUsage, memory: rss, cpuMax: total, memoryMax: os.totalmem(), cpuPercentage: cpuUsages[cpuUsages.length-1], memoryPercentage: memoryUsages[memoryUsages.length-1] });
-    fs.writeFileSync(path.join(__dirname, "/logs/resourceUsages.json"), JSON.stringify(logFile, null, 4));
 }
 
 const killThread = async (worker: Worker, message: Message) => {
@@ -235,22 +227,18 @@ async function onMessage(message: Message): Promise<any> {
         try {
             const userMsg = message.content.slice(config.Discord.Prefix.length).trim();
             console.log(message.author.id + " | " + message.author.username + "#" + message.author.discriminator + ": " + userMsg)
-            await message.react("🌀");
+            message.channel.sendTyping();
             if (!conversation[message.author.id])
                 conversation[message.author.id] = {messages: [], lastTime: Date.now()};
             conversation[message.author.id].lastTime = Date.now();
             conversation[message.author.id]["messages"].push({role: "user", content: userMsg});
             let res: Array<types.command>|undefined;
             try {
-                res = await getIntent(conversation[message.author.id]["messages"]);
-                await message.react("✅");
-                await message.reactions.resolve("🌀")!.users.remove(config.Discord.Id)
+                res = await getIntent(message, conversation[message.author.id]["messages"]);
                 conversation[message.author.id]["messages"].push({role: "assistant", content: JSON.stringify(res)});
             } catch (e) {
-                await message.react("✅");
-                await message.reactions.resolve("🌀")!.users.remove(config.Discord.Id)
                 if (e === 503)
-                    return await gotError(message, errMsg.general(`\n${ansiCode("red")}그런데.. 이번에는 오류가 아니라 GPT가 대답을 못했네요...?${ansiCode("reset")})`))
+                    return await gotError(message, errMsg.general(`\n${ansiCode("red")}이유요? 대답할 말을 찾지 못했어요...${ansiCode("reset")})`))
                 else if (e === 500)
                     return await gotError(message, errMsg.general())
             }
@@ -453,44 +441,9 @@ async function onMessage(message: Message): Promise<any> {
                     case "user.mute":
                         if (!Channel.permissionsFor(message.author)!.has(PermissionsBitField.Flags.MuteMembers))
                             return await gotError(message, errMsg.permission.user(permissionTranslation.MuteMembers))
-                        if (!bot_permission.has(PermissionsBitField.Flags.ManageRoles))
-                            return await gotError(message, errMsg.permission.bot(permissionTranslation.ManageRoles))
-                        let role = message.guild!.roles.cache.find((role) => role.name === "Muted");
-                        if (!role) {
-                            try {
-                                await message.guild!.roles.create({
-                                    name: "Muted",
-                                    color: "#000000",
-                                    permissions: []
-                                })
-                                message.guild!.channels.cache.forEach(async channel => {
-                                    const mutedRole = await channel.guild.roles.cache.find((role) => role.name === 'Muted');
-                                    await (channel as TextChannel).permissionOverwrites.create(mutedRole as Role, {
-                                        SendMessages: false
-                                    });
-                                });
-                                role = await message.guild!.roles.cache.find((role) => role.name === "Muted");
-                            } catch (e) {
-                                return await gotError(message, errMsg.general("Muted 역할생성에 실패하였습니다"))
-                            }
-                        }
-                        try {
-                            let uid = (/[0-9]+/).exec(res.characteristic.user)![0];
-                            if (res.characteristic.isMute == "true") {
-                                if (message.guild!.members.cache.get(uid!)!.roles.cache.find(role => role.name === "Muted"))
-                                    return await gotError(message, "이미 뮤트된 유저입니다!");
-                                await message.guild!.members.cache.get(uid)!.roles.add(role as Role);
-                                await message.reply("완료했습니다!")
-                            } else {
-                                if (!message.guild!.members.cache.get(uid)!.roles.cache.find(role => role.name === "Muted"))
-                                    return await gotError(message, "뮤트된 유저가 아닙니다!");
-                                await message.guild!.members.cache.get(uid)!.roles.remove(role as Role);
-                                await message.reply("완료했습니다!")
-                            }
-                        } catch (e) {
-                            await gotError(message, errMsg.general("유저 역할을 수정하는 도중 오류가 발생하였습니다."))
-                            console.error(e)
-                        }
+                        if (!bot_permission.has(PermissionsBitField.Flags.MuteMembers))
+                            return await gotError(message, errMsg.permission.bot(permissionTranslation.MuteMembers))
+
                         break;
                     case "util.timer":
                         let time: number = Number(res.characteristic.time);
@@ -625,8 +578,8 @@ async function onMessage(message: Message): Promise<any> {
                         break;
                 }
             }
-            Array.prototype.forEach.call(res, async (cmd: types.command) => {
-                await controller(cmd).then(() => {})
+            res?.forEach((cmd: types.command) => {
+                controller(cmd)
             })
         } catch (e) {
             console.error(e)

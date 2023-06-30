@@ -24,20 +24,18 @@ import db from "./db";
 import * as https from "https";
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import * as ejs from "ejs";
-
-
+import * as esm from "express-status-monitor";
 export let port = 18001
 let app = express.default();
 app.set("view engine", "ejs");
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(require('express-status-monitor')());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.set('views', path.join(__dirname, 'web/views'));
 app.use("/img", express.static(path.join(__dirname, 'web/static/img')));
 app.use("/js", express.static(path.join(__dirname, 'web/static/js')));
 app.use("/css", express.static(path.join(__dirname, 'web/static/css')));
 
-app.get("", (req: Request, res: Response) => res.render("index"));
 
 app.get("/link/driver", async (req: Request, res: Response) => {
     if (req.query.code && req.query.state) {

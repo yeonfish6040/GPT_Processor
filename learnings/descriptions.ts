@@ -21,15 +21,15 @@ export const descriptions = {
             user: "Ban specific user",
             unban: "Unban specific user. If flase, ban. If true, unban"
         },
-        mute: {
+        timeout: {
             user: "Mute specific user",
-            isMute: "Mute or unmute specific user. If false, unmute user, if true, mute user",
+            time: "Time of mute specific user. If you want to remove timeout from specific user, just fill it with null",
         },
         check_permission: {
             user: "Check permission of specific user"
         }
     },
-    AGPT: {
-        task: "Which user wants"
-    }
+    // AGPT: {
+    //     task: "Which user wants"
+    // }
 }
