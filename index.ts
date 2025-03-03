@@ -1,16 +1,12 @@
 import * as os from "os";
 import * as fs from "fs";
 import * as path from "path";
-import * as worker_threads from "worker_threads";
 import type {Worker} from "worker_threads";
 
 import * as types from "./map/types";
 
 import OpenAI from 'openai';
 
-import * as AGPT_constant from "./map/AGPT_constant";
-
-import {application as app, port} from "./functions/WebServer";
 import {ansify, ansiCode} from "./map/ansi";
 import {common} from "./learnings/common";
 import {commands} from "./learnings/commands";
@@ -47,37 +43,18 @@ const client = new Discord.Client({
   }
 });
 
-import {Koreanbots, UpdateResponse} from "koreanbots";
 import EmbedManager from "./functions/EmbedManager";
-
-let koreanbots: Koreanbots = new Koreanbots({
-  api: {
-    token: config.KoreanBots.Token
-  },
-  clientID: config.Discord.Id
-})
-let update = (servers: number) => koreanbots.mybot.update({servers, shards: client.shard?.count})
-    .then((res: UpdateResponse) => res.code == 304 ? null : console.log("Server count updated.", JSON.stringify(res)))
-    .catch(console.error)
 
 const openai = new OpenAI({
   apiKey: config.OpenAI.API_KEY,
 });
 
-import * as chartjs from "chart.js";
 import {ChatCompletion} from "openai/resources";
-import {ChartJSNodeCanvas} from "chartjs-node-canvas";
 
 let uptime: number;
 client.on(Events.ClientReady, () => {
   uptime = Date.now();
   console.log("Bot started at " + new Date(uptime).toLocaleString() + " as " + client.user!.tag);
-
-  try {
-    update(client.guilds.cache.size);
-    setInterval(update, 60000, client.guilds.cache.size);
-  } catch (e) {
-  }
 });
 
 client.on(Events.MessageCreate, onMessage);
@@ -249,55 +226,6 @@ async function onMessage(message: Message): Promise<any> {
             let uptimeFixed = now - uptime;
             let uptimeString = `${Math.floor(uptimeFixed / 1000 / 60 / 60)}시간 ${Math.floor(uptimeFixed / 1000 / 60) % 60}분 ${Math.floor(uptimeFixed / 1000) % 60}초`
             let memoryUsage = `${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)}MB`
-
-            const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 1200, height: 600, backgroundColour: "white"});
-            let data: chartjs.ChartData = {
-              labels: range(1, cpuUsages.length),
-              datasets: [
-                {
-                  type: "line",
-                  label: "CPU",
-                  data: cpuUsages,
-                  borderColor: "blue",
-                  backgroundColor: "rgba(0, 0, 255, 0.2)",
-                  borderWidth: 1,
-                },
-                {
-                  type: "line",
-                  label: "Memory",
-                  data: memoryUsages,
-                  borderColor: "red",
-                  backgroundColor: "rgba(255, 0, 0, 0.2)",
-                  borderWidth: 1,
-                }
-              ]
-            };
-            let options = {
-              radius: 0,
-              plugins: {
-                title: {
-                  display: true,
-                  text: 'CPU, Memory Usage (%)'
-                },
-                customCanvasBackgroundColor: {
-                  color: 'white',
-                }
-              },
-              scales: {
-                y: {
-                  min: 0,
-                  max: 100,
-                  stepSize: 10
-                }
-              }
-            };
-            let img = chartJSNodeCanvas.renderToDataURLSync({
-              type: "line",
-              data: data,
-              options: options
-            }).replace(/^data:image\/png;base64,/, "");
-            let filename = `chart_usage_${Date.now()}.png`;
-            fs.writeFileSync(path.join(__dirname, `functions/web/static/img/${filename}`), img, "base64");
             let info = new EmbedBuilder()
                 .setTitle("봇 정보")
                 .addFields(
@@ -312,7 +240,6 @@ async function onMessage(message: Message): Promise<any> {
                 )
                 .setTimestamp()
                 .setColor(randomColor())
-                .setImage("https://lyj.kr:18001/img/" + filename)
                 .setFooter({text: "봇 정보", iconURL: client.user!.avatarURL() as string});
             await message.reply({embeds: [info]})
             break;
@@ -455,123 +382,6 @@ async function onMessage(message: Message): Promise<any> {
                 .setTimestamp();
             await message.reply({embeds: [embedNotice]});
             break;
-          case "AGPT":
-            let embed = new EmbedManager();
-            embed.setTitle("AGPT")
-                .setDescription("AGPT가 요청을 처리중입니다!")
-                .addFields({name: "상태", value: "정상-진행중", inline: true},
-                    {name: "단계", value: "준비중", inline: true}
-                ).setColor(randomColor())
-                .setTimestamp();
-            let msg = await message.reply({embeds: [embed]});
-            embed.setMessage(msg)
-
-            let worker = new worker_threads.Worker(path.join(__dirname, "/functions/AGPT_core.js"));
-            let room = app.io.sockets.adapter.rooms.get(message.author.id);
-
-            let NRPC = true
-            let r_process = path.join(__dirname, "/functions/AGPT_processes/" + message.author.id + ".json")
-            if (fs.existsSync(r_process) && fs.readFileSync(r_process).toString() !== "")
-              NRPC = false
-
-            worker.postMessage({
-              evt: AGPT_constant.parent.tStart,
-              task: res.characteristic.task,
-              uid: message.author.id,
-              socket: room ? room.size === 1 : false,
-              NRPC: NRPC
-            });
-            worker.on("message", async (value) => {
-              console.log(value)
-              switch (value.evt) {
-                case AGPT_constant.child.SDC:
-                  embed
-                      .changeField("단계", "드라이버 확인중")
-                      .edit();
-                  break;
-                case AGPT_constant.child.error.DNC:
-                  embed
-                      .addDescription("드라이버가 소켓서버에 연결되어있지 않음.")
-                      .addDescription("드라이버가 설치되어있는 컴퓨터가 켜져있는지 확인하여 주십시오.")
-                      .changeField("상태", "오류-드라이버가 연결되지 않았습니다.")
-                      .setColor(0xFF0000)
-                      .edit();
-                  killThread(worker, message)
-                  break;
-                case AGPT_constant.child.error.DNF:
-                  embed
-                      .addDescription("드라이버 등록 정보를 찾을 수 없음.")
-                      .addDescription("Help: 드라이버를 설치하거나 드라이버 초기 설정을 완료 후, 다시 시도하여 주십시오.")
-                      .changeField("상태", "오류-드라이버가 계정에 등록되지 않았습니다.")
-                      .setColor(0xFF0000)
-                      .edit();
-                  killThread(worker, message)
-                  break;
-                case AGPT_constant.child.CDR:
-                  embed
-                      .addDescription("드라이버 등록 여부 확인 완료")
-                      .edit();
-                  break;
-                case AGPT_constant.child.CDC:
-                  embed
-                      .addDescription("드라이버 연결 확인 완료")
-                      .edit();
-                  break;
-                case AGPT_constant.child.CPF:
-                  embed
-                      .changeField("단계", "프로세스 파일 확인중")
-                      .edit();
-                  break;
-                case AGPT_constant.child.error.RPE:
-                  embed
-                      .changeField("상태", "오류-진행중인 프로세스가 있습니다.")
-                      .edit();
-                  killThread(worker, message)
-                  break;
-                case AGPT_constant.child.SPP:
-                  embed
-                      .addDescription("진행중인 프로세스 없음.")
-                      .changeField("단계", "프로세스 생성중")
-                      .edit();
-                  let process = path.join(__dirname, `/functions/AGPT_processes/${message.author.id}.json`);
-                  fs.createWriteStream(process).end();
-                  break;
-                case AGPT_constant.child.WGG:
-                  embed
-                      .addDescription(`Goal-${value.index}: ` + value.goal)
-                      .edit();
-                  break;
-                case AGPT_constant.child.SRP:
-                  embed
-                      .addDescription("프로세스 생성 완료")
-                      .changeField("단계", "프로세스 실행중")
-                      .edit();
-                  killThread(worker, message)
-                  break;
-                case AGPT_constant.child.error.OAE:
-                  embed
-                      .addDescription("프로세스 생성 실패")
-                      .addDescription("OpenAI API 오류발생")
-                      .addDescription(value.error)
-                      .changeField("상태", "오류-OpenAI API 오류")
-                      .setColor(0xFF0000)
-                      .edit();
-                  killThread(worker, message)
-                  break;
-                case AGPT_constant.child.PGU:
-                  switch (value.step) {
-                    case AGPT_constant.child.progress.goals:
-                      console.log(value.data)
-
-                      break;
-                  }
-                  break
-                case AGPT_constant.child.log:
-                  console.log(value.data)
-                  break;
-              }
-            });
-            break;
         }
       }
       res?.forEach((cmd: types.command) => {
@@ -586,9 +396,3 @@ async function onMessage(message: Message): Promise<any> {
 // Logger
 logUsage()
 setInterval(logUsage, 10000)
-
-
-// Web Server
-app.server.listen(port, () => {
-  console.log(`Express Https Server is running on port ${port}`);
-});
