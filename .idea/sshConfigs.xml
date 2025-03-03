@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SshConfigs">
-    <configs>
-      <sshConfig host="lyj.kr" id="66d48670-1571-4ed5-b407-ce330a213dec" keyPath="/Volumes/yeonfish/keys/lyj-new_all.pem" port="22" nameFormat="DESCRIPTIVE" username="discord" useOpenSSHConfig="true" />
-    </configs>
-  </component>
-</project>
